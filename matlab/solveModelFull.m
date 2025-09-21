@@ -23,30 +23,5 @@ for iStep = 1:nSteps
 end
 
 
-% 
-% 
-% nGroups = length(par.N);
-% 
-% tSpan = 0:par.nDays-1;
-% 
-% % IC for S, I and S_focal
-% S0 = par.N*(1-par.I0);
-% I0 = par.N*par.I0;
-% S_focal0 = S0;
-% 
-% IC = [S0; I0; S_focal0];
-% opts = odeset('NonNegative', 1:length(IC));
-% 
-% [t, Y] = ode45(@(t, y)myRHSFull(t, y, x_focal, xBG, par), tSpan, IC);
-% 
-% S = Y(:, 1:nGroups)';
-% I = Y(:, nGroups+1:2*nGroups)';
-% S_focal = Y(:, 2*nGroups+1:3*nGroups)';
-
-
-
-
-
-
 
 
