@@ -48,7 +48,7 @@ tMesh = 0:par.meshSpace:par.tMax;
 xu = repmat([0; 0], par.nGroups, 1);
 
 % Get model solution and costs for no control 
-[fu, costInfu, costContu, ~, Su, Iu] = objFnCent(xu, par);
+[fu, results_u] = objFnCent(xu, par);
 
 
 
@@ -58,38 +58,34 @@ xu = repmat([0; 0], par.nGroups, 1);
 
 % Solve central planner's problem with heuristic control function
 x0 = xu; 
-xOpt = fmincon(@(x)objFnCent(x, par), x0, [], [], [], [], zeros(size(x0)), [] );
+xOptCent = fmincon(@(x)objFnCent(x, par), x0, [], [], [], [], zeros(size(x0)), [] );
 
 % Get model solution and costs for heuristic optimum
-[f, costInf, costCont, aOpt, S, I] = objFnCent(xOpt, par);
+[f, resultsCent] = objFnCent(xOptCent, par);
 
 % Set initial condition for the full optimization by interpolating the
 % heuristic function and the time mesh points
 nMeshPts = length(tMesh);
-x0Full = interp1(t', aOpt', tMesh)';
+x0Full = interp1(t', resultsCent.a', tMesh)';
 
 % Solve central planner's problem with full time-dependent control variable
-xOptFull = fmincon(@(x)objFnCentFull(x, par), x0Full, [], [], [], [], zeros(nMeshPts, par.nGroups), ones(nMeshPts, par.nGroups) );
+xOptCentFull = fmincon(@(x)objFnCentFull(x, par), x0Full, [], [], [], [], zeros(nMeshPts, par.nGroups), ones(nMeshPts, par.nGroups) );
 
 % Get model solution and costs for full optimum
-[~, costInfFull, costContFull, aFull, SFull, IFull] = objFnCentFull(xOptFull, par);
+[~, resultsCentFull] = objFnCentFull(xOptCentFull, par);
 
-% Calculate recovered compartment
-R = par.N-S-I;
-Ru = par.N-Su-Iu;
-RFull = par.N-SFull-IFull;
-
+% Group labels for legend
 groupLbls = string((1:par.nGroups)');
 
 h = figure(1);
 h.Position = [     240         125        1024         744];
 tiledlayout(2, 2, "TileSpacing", "compact");
 nexttile;
-plot(t, RFull)
+plot(t, resultsCentFull.R)
 hold on
 set(gca, 'ColorOrderIndex', 1);
-plot(t, Ru, '--')
-plot(t, aFull, 'LineWidth', 2)
+plot(t, results_u.R, '--')
+plot(t, resultsCentFull.a, 'LineWidth', 2)
 if par.nGroups > 1
     lbls = ["R_"+groupLbls; "R_"+groupLbls+"_u"; "a_"+groupLbls ];
 else
@@ -100,10 +96,10 @@ grid on
 xlabel('time (days)')
 
 nexttile;
-plot(t, costInfFull+costContFull)
+plot(t, resultsCentFull.costInf + resultsCentFull.costCont)
 hold on
 set(gca, 'ColorOrderIndex', 1);
-plot(t, costInfu+costContu, '--')
+plot(t, results_u.costInf + results_u.costCont, '--')
 if par.nGroups > 1
     lbls = ["cost_"+groupIDs; "cost_"+groupIDs+"_u"];
 else
@@ -115,10 +111,10 @@ ylabel('cumulative aggregate cost')
 xlabel('time (days)')
 
 nexttile;
-plot(t, costInfFull, t, costContFull)
+plot(t, resultsCentFull.costInf, t, resultsCentFull.costCont)
 hold on
 set(gca, 'ColorOrderIndex', 1);
-plot(t, costInfu, '--')
+plot(t, results_u.costInf, '--')
 if par.nGroups > 1
     lbls = ["inf cost_"+groupIDs; "cont cost_"+groupIDs; "inf cost_"+groupIDs+"_u"];
 else
@@ -139,80 +135,85 @@ drawnow
 % Solve decentralised problem
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
+% Start by setting background behaviour to the solution to the centralised
+% problem with heuristic control function
+xOptDecent = xOptCent;
+
 iRep = 1;
 convFlag = false;
 while iRep <= maxReps & ~convFlag 
-    % Start by setting background behaviour to the solution central problem
-    xSav = xOpt;
+    xSav = xOptDecent;
     % Optimize each group in turn 
     for iGroup = 1:par.nGroups
         % Indices of x relating to the current group
         groupInd = [1, 2] + 2*(iGroup-1);
-        xOptGroup = fmincon(@(x)objFnDecent(x, xOpt, iGroup, par), xOpt(groupInd), [], [], [], [], zeros(2, 1), [] );
-        xOpt(groupInd) = xOptGroup;
+        xOptGroup = fmincon(@(x)objFnDecent(x, xOptDecent, iGroup, par), xOptDecent(groupInd), [], [], [], [], zeros(2, 1), [] );
+        xOptDecent(groupInd) = xOptGroup;
     end
-    convFlag = norm(xOpt-xSav)/norm(xSav) < relTol;
+    convFlag = norm(xOptDecent-xSav)/norm(xSav) < relTol;
     iRep = iRep+1;
 end
 
+if ~convFlag
+    fprintf('Warning: decentralised problem with heuristic control function has failed to converge after %i iterations\n', maxReps)
+end
+
 % Get model solution and costs for heuristic optimum
-[f, costInf_pp, costCont_pp, aOpt, S, I, S_focal] = objFnDecentBoth(xOpt, xOpt, par);
+[f, resultsDecent] = objFnDecentBoth(xOptDecent, xOptDecent, par);
 
 % Set initial condition for the full optimization by interpolating the
 % heuristic function and the time mesh points
-xOptFull = interp1(t', aOpt', tMesh)';
+xOptDecentFull = interp1(t', resultsDecent.a', tMesh)';
 
 iRep = 1;
 convFlag = false;
 while iRep <= maxReps & ~convFlag 
     % Start by setting background behaviour to the solution central problem
-    xSav = xOptFull;
+    xSav = xOptDecentFull;
     % Optimize each group in turn 
     for iGroup = 1:par.nGroups
         % Indices of x relating to the current group
-        xOptGroup = fmincon(@(x)objFnDecentFull(x, xOptFull, iGroup, par), xOptFull(:, iGroup), [], [], [], [], zeros(nMeshPts, 1), ones(nMeshPts, 1) );
-        xOptFull(:, iGroup) = xOptGroup;
+        xOptGroup = fmincon(@(x)objFnDecentFull(x, xOptDecentFull, iGroup, par), xOptDecentFull(:, iGroup), [], [], [], [], zeros(nMeshPts, 1), ones(nMeshPts, 1) );
+        xOptDecentFull(:, iGroup) = xOptGroup;
     end
-    convFlag = norm(xOptFull-xSav)/norm(xSav) < relTol;
-%    norm(xOptFull-xSav)/norm(xSav)
+    convFlag = norm(xOptDecentFull-xSav)/norm(xSav) < relTol;
+%    norm(xOptDecentFull-xSav)/norm(xSav)
 %    figure(10);
-%    plot(tMesh, xOptFull)
+%    plot(tMesh, xOptDecentFull)
 %    drawnow
     iRep = iRep+1;
 end
 
-xOptFull = xOptFull';
-
-% Get model solution and costs for full optimum
-[costInfFullDecent, costContFullDecent, aFullDecent, SFullDecent, IFullDecent] = deal(zeros(par.nGroups, length(t)));
-for iGroup = 1:par.nGroups
-    [~, costInfFullDecent(iGroup, :), costContFullDecent(iGroup, :), aFullDecent(iGroup, :), SFullDecent, IFullDecent] = objFnDecentFull(xOptFull(iGroup, :), xOptFull, iGroup, par);
+if ~convFlag
+    fprintf('Warning: decentralised problem with full control function has failed to converge after %i iterations\n', maxReps)
 end
 
-% Calculate recovered compartment
-R = par.N-S-I;
-RFullDecent = par.N-SFullDecent-IFullDecent;
+xOptDecentFull = xOptDecentFull';
+
+% Get model solution and costs for full optimum
+[~, resultsDecentFull] = objFnDecentFullBoth(xOptDecentFull, xOptDecentFull, par);
+
 
 % Plotting
 h = figure(2);
 h.Position = [    360         183        1024         755];
 tiledlayout(2, 2, "TileSpacing", "compact");
 nexttile;
-plot(t, RFullDecent)
+plot(t, resultsDecentFull.R)
 hold on
 set(gca, 'ColorOrderIndex', 1);
-plot(t, Ru, '--')
-plot(t, aFullDecent, 'LineWidth', 2)
+plot(t, results_u.R, '--')
+plot(t, resultsDecentFull.a, 'LineWidth', 2)
 grid on
 legend('R', 'R_u', 'a', 'Location', 'southeast')
 xlabel('time (days)')
 
 
 nexttile;
-plot(t, (costInfFullDecent+costContFullDecent).*par.N)
+plot(t, (resultsDecentFull.costInf + resultsDecentFull.costCont).*par.N)
 hold on
 set(gca, 'ColorOrderIndex', 1);
-plot(t, costInfu+costContu, '--')
+plot(t, results_u.costInf + results_u.costCont, '--')
 grid on
 legend('cost', 'cost_u', 'Location', 'southeast')
 ylabel('cumulative aggregate cost')
@@ -220,10 +221,10 @@ xlabel('time (days)')
 
 
 nexttile;
-plot(t, costInfFullDecent.*par.N, t, costContFullDecent.*par.N)
+plot(t, resultsDecentFull.costInf.*par.N, t, resultsDecentFull.costCont.*par.N)
 hold on
 set(gca, 'ColorOrderIndex', 1);
-plot(t, costInfu, '--')
+plot(t, results_u.costInf, '--')
 legend('inf cost', 'cont cost', 'inf cost_u', 'Location', 'southeast')
 grid on
 ylabel('cumulative aggregate cost')
@@ -235,7 +236,7 @@ sgtitle('decentralized control')
 
 
 figure(3)
-plot(t, costInfu, t, costInfFullDecent+costContFullDecent, t, costInfFull+costContFull, t, Celim_per_unit_time*t )
+plot(t, results_u.costInf, t, resultsDecentFull.costInf + resultsDecentFull.costCont, t, resultsCentFull.costInf + resultsCentFull.costCont, t, Celim_per_unit_time*t )
 grid on
 legend('unmitigated', 'decentralised response', 'centralised response', 'elimination response', 'Location', 'southeast')
 xlabel('time (days)')

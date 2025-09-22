@@ -1,4 +1,4 @@
-function [f, costInf, costCont, a, S, I, S_focal] = objFnDecent(x, xBG, focalGroupID, par)
+function [f, results] = objFnDecent(x, xBG, focalGroupID, par)
 
 
 
@@ -8,17 +8,31 @@ function [f, costInf, costCont, a, S, I, S_focal] = objFnDecent(x, xBG, focalGro
 % output, which only appleis to the focal group)
 xtmp = repmat(x, par.nGroups, 1);
 
-[S, I, S_focal] = solveModel(xtmp, xBG, par);
+% Solve SIR model
+[S, I, S_focal_all] = solveModel(xtmp, xBG, par);
 
-a = myContModel(xtmp, S, I, par);
+% Evaluate heuristic function for contact rate a(t)
+a_all = myContModel(xtmp, S, I, par);
 
+% Extract a and S_focal for the specified focal group
+a = a_all(focalGroupID, :);
+S_focal = S_focal_all(focalGroupID, :);
 
-S_focal = S_focal(focalGroupID, :);
-a = a(focalGroupID, :);
-
+% Calculate infection and control costs
 costInf = par.costPerInf(focalGroupID)*(1-S_focal/par.N(focalGroupID)); 
 costCont = par.dt * cumsum(par.costlin(focalGroupID).*(1-a) + par.costquad(focalGroupID).*(1-a).^2, 2);
 
+% Store results in structure for output
+results.S = S;
+results.I = I;
+results.R = par.N-S-I;
+results.S_focal = S_focal;
+results.a = a;
+results.costInf = costInf;
+results.costCont = costCont;
+
+
+% Calculate objective function
 f = costInf(end)+costCont(end);
 
 
