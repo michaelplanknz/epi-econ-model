@@ -19,10 +19,11 @@ hold on
 set(gca, 'ColorOrderIndex', 1);
 plot(t, results_u.R, '--')
 plot(t, resultsCentFull.a, 'LineWidth', 2)
+plot(t, resultsCentShaun.a,  '--', 'LineWidth', 2)
 if par.nGroups > 1
     lbls = ["R_"+groupLbls; "R_"+groupLbls+"_u"; "a_"+groupLbls ];
 else
-    lbls = ["R", "R_u", "a"];
+    lbls = ["R", "R_u", "a", "a (Shaun)"];
 end
 legend(lbls, 'Location', 'southeast')
 grid on
@@ -33,10 +34,11 @@ plot(t, resultsCentFull.costInf + resultsCentFull.costCont)
 hold on
 set(gca, 'ColorOrderIndex', 1);
 plot(t, results_u.costInf + results_u.costCont, '--')
+plot(t, resultsCentShaun.costInf + resultsCentShaun.costCont, '-')
 if par.nGroups > 1
     lbls = ["cost_"+groupIDs; "cost_"+groupIDs+"_u"];
 else
-    lbls = ["cost", "cost_u"];
+    lbls = ["cost", "cost_u", "cost (Shaun)"];
 end
 legend(lbls, 'Location', 'southeast')
 grid on
@@ -72,8 +74,14 @@ hold on
 set(gca, 'ColorOrderIndex', 1);
 plot(t, results_u.R, '--')
 plot(t, resultsDecentFull.a, 'LineWidth', 2)
+plot(t, resultsDecentShaun.a, '--', 'LineWidth', 2)
 grid on
-legend('R', 'R_u', 'a', 'Location', 'southeast')
+if par.nGroups > 1
+    lbls = ["R_"+groupLbls; "R_"+groupLbls+"_u"; "a_"+groupLbls ];
+else
+    lbls = ["R", "R_u", "a", "a (Shaun)"];
+end
+legend(lbls, 'Location', 'southeast')
 xlabel('time (days)')
 
 
@@ -82,8 +90,15 @@ plot(t, (resultsDecentFull.costInf + resultsDecentFull.costCont).*par.N)
 hold on
 set(gca, 'ColorOrderIndex', 1);
 plot(t, results_u.costInf + results_u.costCont, '--')
+
+plot(t, resultsDecentShaun.costInf + resultsDecentShaun.costCont, '-' )
 grid on
-legend('cost', 'cost_u', 'Location', 'southeast')
+if par.nGroups > 1
+    lbls = ["cost_"+groupIDs; "cost_"+groupIDs+"_u"];
+else
+    lbls = ["cost", "cost_u", "cost (Shaun)"];
+end
+legend(lbls, 'Location', 'southeast')
 ylabel('cumulative aggregate cost')
 xlabel('time (days)')
 
@@ -93,7 +108,12 @@ plot(t, resultsDecentFull.costInf.*par.N, t, resultsDecentFull.costCont.*par.N)
 hold on
 set(gca, 'ColorOrderIndex', 1);
 plot(t, results_u.costInf, '--')
-legend('inf cost', 'cont cost', 'inf cost_u', 'Location', 'southeast')
+if par.nGroups > 1
+    lbls = ["inf cost_"+groupIDs; "cont cost_"+groupIDs; "inf cost_"+groupIDs+"_u"];
+else
+    lbls = ["inf cost", "cont cost", "inf cost_u"];
+end
+legend(lbls, 'Location', 'southeast')
 grid on
 ylabel('cumulative aggregate cost')
 xlabel('time (days)')

@@ -80,7 +80,6 @@ groupLbls = string((1:par.nGroups)');
 
 
 
-
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % Solve decentralised problem
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -142,6 +141,14 @@ xOptDecentFull = xOptDecentFull';
 
 % Get model solution and costs for full optimum
 [~, resultsDecentFull] = objFnDecentFullBoth(xOptDecentFull, xOptDecentFull, par);
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% Solve centralised and decentralised problem with Shaun's method
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+resultsCentShaun = getResultsShaun("cent", par);
+resultsDecentShaun = getResultsShaun("decent", par);
 
 
 fOut = outFolder + "results.mat";
