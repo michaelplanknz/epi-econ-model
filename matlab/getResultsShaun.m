@@ -14,7 +14,7 @@ else
 end
 
 % Initialise at uncontrolled state
-a = ones(size(t));
+a = ones(par.nGroups, length(t));
 
 convFlag = false;
 iTry = 1;
@@ -25,10 +25,10 @@ while iTry <= maxTries * ~convFlag
     [S, I, ~] = solveModelFull(a, a, par);
 
     % Update a
-    a = max(0, min(1, (par.costlin + 2*par.costquad)./(2*par.costquad + coeff*par.costPerInf*par.Beta*I*S(end)) ));
+    a = max(0, min(1, (par.costlin + 2*par.costquad)./(2*par.costquad + coeff*par.costPerInf.*  (par.Beta*I)./par.N  .*  S(:, end)) ));
 
     % Test for convergence
-    convFlag = norm(a-aSav, inf)/norm(aSav, inf) <= relTol;
+    convFlag = max(max(abs(a-aSav))) / max(max(abs(aSav))) <= relTol;
     iTry = iTry+1;
 end
 
