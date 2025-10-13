@@ -22,31 +22,29 @@ h = figure(1);
 h.Position = [     240         125        1024         744];
 tiledlayout(2, 2, "TileSpacing", "compact");
 nexttile;
-plot(t, resultsCentFull.R)
+plot(t, resultsCent.R)
 hold on
 set(gca, 'ColorOrderIndex', 1);
 plot(t, results_u.R, '--')
-plot(t, resultsCentFull.a, 'LineWidth', 2)
-plot(t, resultsCentAnalytic.a,  '--', 'LineWidth', 2)
+plot(t, resultsCent.a, 'LineWidth', 2)
 if par.nGroups > 1
     lbls = ["R_"+groupLbls; "R_"+groupLbls+"_u"; "a_"+groupLbls ];
 else
-    lbls = ["R", "R_u", "a", "a (analytic)"];
+    lbls = ["R", "R_u", "a"];
 end
 legend(lbls, 'Location', 'southeast')
 grid on
 xlabel('time (days)')
 
 nexttile;
-plot(t, resultsCentFull.costInf + resultsCentFull.costCont)
+plot(t, resultsCent.costInf + resultsCent.costCont)
 hold on
 set(gca, 'ColorOrderIndex', 1);
 plot(t, results_u.costInf + results_u.costCont, '--')
-plot(t, resultsCentAnalytic.costInf + resultsCentAnalytic.costCont, '-')
 if par.nGroups > 1
     lbls = ["cost_"+groupIDs; "cost_"+groupIDs+"_u"];
 else
-    lbls = ["cost", "cost_u", "cost (analytic)"];
+    lbls = ["cost", "cost_u"];
 end
 legend(lbls, 'Location', 'southeast')
 grid on
@@ -54,7 +52,7 @@ ylabel('cumulative aggregate cost')
 xlabel('time (days)')
 
 nexttile;
-plot(t, resultsCentFull.costInf, t, resultsCentFull.costCont)
+plot(t, resultsCent.costInf, t, resultsCent.costCont)
 hold on
 set(gca, 'ColorOrderIndex', 1);
 plot(t, results_u.costInf, '--')
@@ -77,34 +75,31 @@ h = figure(2);
 h.Position = [    360         183        1024         755];
 tiledlayout(2, 2, "TileSpacing", "compact");
 nexttile;
-plot(t, resultsDecentFull.R)
+plot(t, resultsDecent.R)
 hold on
 set(gca, 'ColorOrderIndex', 1);
 plot(t, results_u.R, '--')
-plot(t, resultsDecentFull.a, 'LineWidth', 2)
-plot(t, resultsDecentAnalytic.a, '--', 'LineWidth', 2)
+plot(t, resultsDecent.a, 'LineWidth', 2)
 grid on
 if par.nGroups > 1
     lbls = ["R_"+groupLbls; "R_"+groupLbls+"_u"; "a_"+groupLbls ];
 else
-    lbls = ["R", "R_u", "a", "a (analytic)"];
+    lbls = ["R", "R_u", "a"];
 end
 legend(lbls, 'Location', 'southeast')
 xlabel('time (days)')
 
 
 nexttile;
-plot(t, (resultsDecentFull.costInf + resultsDecentFull.costCont).*par.N)
+plot(t, (resultsDecent.costInf + resultsDecent.costCont).*par.N)
 hold on
 set(gca, 'ColorOrderIndex', 1);
 plot(t, results_u.costInf + results_u.costCont, '--')
-
-plot(t, resultsDecentAnalytic.costInf + resultsDecentAnalytic.costCont, '-' )
 grid on
 if par.nGroups > 1
     lbls = ["cost_"+groupIDs; "cost_"+groupIDs+"_u"];
 else
-    lbls = ["cost", "cost_u", "cost (analytic)"];
+    lbls = ["cost", "cost_u"];
 end
 legend(lbls, 'Location', 'southeast')
 ylabel('cumulative aggregate cost')
@@ -112,7 +107,7 @@ xlabel('time (days)')
 
 
 nexttile;
-plot(t, resultsDecentFull.costInf.*par.N, t, resultsDecentFull.costCont.*par.N)
+plot(t, resultsDecent.costInf.*par.N, t, resultsDecent.costCont.*par.N)
 hold on
 set(gca, 'ColorOrderIndex', 1);
 plot(t, results_u.costInf, '--')
@@ -132,7 +127,7 @@ sgtitle('decentralized control')
 
 % Cost comparison
 figure(3)
-plot(t, results_u.costInf, t, resultsDecentFull.costInf + resultsDecentFull.costCont, t, resultsCentFull.costInf + resultsCentFull.costCont, t, Celim*t )
+plot(t, results_u.costInf, t, resultsDecent.costInf + resultsDecent.costCont, t, resultsCent.costInf + resultsCent.costCont, t, Celim*t )
 grid on
 legend('unmitigated', 'decentralised response', 'centralised response', 'elimination response', 'Location', 'southeast')
 xlabel('time (days)')
