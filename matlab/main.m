@@ -28,10 +28,11 @@ t = 0:par.dt:par.tMax;
 tMesh = 0:par.meshSpace:par.tMax;
 
 % Define no control state
-xu = repmat([0; 0], par.nGroups, 1);
+nMeshPts = length(tMesh);
+xu = ones(par.nGroups, nMeshPts); 
 
 % Get model solution and costs for no control 
-[fu, results_u] = objFnCent(xu, par);
+[fu, results_u] = objFnCentFull(xu, par);
 
 
 
@@ -51,7 +52,7 @@ resultsCentAnalytic = getResultsAnalytic("cent", par);
 
 % Set initial condition for the full optimization by interpolating the
 % analytic approximatoin at the time mesh points
-nMeshPts = length(tMesh);
+
 x0 = interp1(t', resultsCentAnalytic.a', tMesh)';
 
 % Solve central planner's problem with full time-dependent control variable
