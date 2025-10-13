@@ -1,4 +1,4 @@
-function [f, results] = objFnCent(x, par)
+function [f, results] = objFnCentHeur(x, par)
 
 % Solve SIR model
 [S, I, ~] = solveModel(x, x, par);

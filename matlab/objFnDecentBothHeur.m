@@ -1,4 +1,4 @@
-function [f, results] = objFnDecentBoth(x, xBG, par)
+function [f, results] = objFnDecentBothHeur(x, xBG, par)
 
 % As objFnDecent, but takes control parameters x for both/all groups and returns the model results for both/all groups
 

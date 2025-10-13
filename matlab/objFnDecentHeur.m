@@ -1,4 +1,4 @@
-function [f, results] = objFnDecent(x, xBG, focalGroupID, par)
+function [f, results] = objFnDecentHeur(x, xBG, focalGroupID, par)
 
 
 
