@@ -103,10 +103,6 @@ while iRep <= maxReps & ~convFlag
         xOptDecentFull(:, iGroup) = xOptGroup;
     end
     convFlag = norm(xOptDecentFull-xSav)/norm(xSav) < relTol;
-%    norm(xOptDecentFull-xSav)/norm(xSav)
-%    figure(10);
-%    plot(tMesh, xOptDecentFull)
-%    drawnow
     iRep = iRep+1;
 end
 
