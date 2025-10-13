@@ -27,11 +27,11 @@ hold on
 set(gca, 'ColorOrderIndex', 1);
 plot(t, results_u.R, '--')
 plot(t, resultsCentFull.a, 'LineWidth', 2)
-plot(t, resultsCentShaun.a,  '--', 'LineWidth', 2)
+plot(t, resultsCentAnalytic.a,  '--', 'LineWidth', 2)
 if par.nGroups > 1
     lbls = ["R_"+groupLbls; "R_"+groupLbls+"_u"; "a_"+groupLbls ];
 else
-    lbls = ["R", "R_u", "a", "a (Shaun)"];
+    lbls = ["R", "R_u", "a", "a (analytic)"];
 end
 legend(lbls, 'Location', 'southeast')
 grid on
@@ -42,11 +42,11 @@ plot(t, resultsCentFull.costInf + resultsCentFull.costCont)
 hold on
 set(gca, 'ColorOrderIndex', 1);
 plot(t, results_u.costInf + results_u.costCont, '--')
-plot(t, resultsCentShaun.costInf + resultsCentShaun.costCont, '-')
+plot(t, resultsCentAnalytic.costInf + resultsCentAnalytic.costCont, '-')
 if par.nGroups > 1
     lbls = ["cost_"+groupIDs; "cost_"+groupIDs+"_u"];
 else
-    lbls = ["cost", "cost_u", "cost (Shaun)"];
+    lbls = ["cost", "cost_u", "cost (analytic)"];
 end
 legend(lbls, 'Location', 'southeast')
 grid on
@@ -82,12 +82,12 @@ hold on
 set(gca, 'ColorOrderIndex', 1);
 plot(t, results_u.R, '--')
 plot(t, resultsDecentFull.a, 'LineWidth', 2)
-plot(t, resultsDecentShaun.a, '--', 'LineWidth', 2)
+plot(t, resultsDecentAnalytic.a, '--', 'LineWidth', 2)
 grid on
 if par.nGroups > 1
     lbls = ["R_"+groupLbls; "R_"+groupLbls+"_u"; "a_"+groupLbls ];
 else
-    lbls = ["R", "R_u", "a", "a (Shaun)"];
+    lbls = ["R", "R_u", "a", "a (analytic)"];
 end
 legend(lbls, 'Location', 'southeast')
 xlabel('time (days)')
@@ -99,12 +99,12 @@ hold on
 set(gca, 'ColorOrderIndex', 1);
 plot(t, results_u.costInf + results_u.costCont, '--')
 
-plot(t, resultsDecentShaun.costInf + resultsDecentShaun.costCont, '-' )
+plot(t, resultsDecentAnalytic.costInf + resultsDecentAnalytic.costCont, '-' )
 grid on
 if par.nGroups > 1
     lbls = ["cost_"+groupIDs; "cost_"+groupIDs+"_u"];
 else
-    lbls = ["cost", "cost_u", "cost (Shaun)"];
+    lbls = ["cost", "cost_u", "cost (analytic)"];
 end
 legend(lbls, 'Location', 'southeast')
 ylabel('cumulative aggregate cost')

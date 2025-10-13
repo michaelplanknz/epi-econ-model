@@ -1,4 +1,4 @@
-function results = getResultsShaun(probType, par)
+function results = getResultsAnalytic(probType, par)
 
 maxTries = 100;
 relTol = 1e-8;
@@ -7,6 +7,7 @@ t = 0:par.dt:par.tMax;
 
 if probType == "cent"
     coeff = 2;
+    fprintf('Warning: the analytical method is not correct for the centralised problem\n')
 elseif probType == "decent"
     coeff = 1;
 else

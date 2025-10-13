@@ -55,9 +55,6 @@ xOptCentFull = fmincon(@(x)objFnCentFull(x, par), x0Full, [], [], [], [], zeros(
 % Get model solution and costs for full optimum
 [~, resultsCentFull] = objFnCentFull(xOptCentFull, par);
 
-% Group labels for legend
-groupLbls = string((1:par.nGroups)');
-
 
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -127,8 +124,8 @@ xOptDecentFull = xOptDecentFull';
 % Solve centralised and decentralised problem with Shaun's method
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
-resultsCentShaun = getResultsShaun("cent", par);
-resultsDecentShaun = getResultsShaun("decent", par);
+resultsCentAnalytic = getResultsAnalytic("cent", par);
+resultsDecentAnalytic = getResultsAnalytic("decent", par);
 
 
 fOut = outFolder + "results.mat";
