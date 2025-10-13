@@ -10,20 +10,20 @@ a = max(0, min(1, pchip(tMesh, x, t)));
 % Solve SIR model
 [S, I, ~] = solveModelFull(a, a, par);
 
-% Calculate infection and control costs
-costInf = par.costPerInf.*(par.N-S);
-costCont = par.dt * par.N .* cumsum(par.costlin.*(1-a) + par.costquad.*(1-a).^2, 2);
+% Calculate infection and control costs per person
+costInfPP = par.costPerInf.*(1-S./par.N);
+costContPP = par.dt * cumsum(par.costlin.*(1-a) + par.costquad.*(1-a).^2, 2);
 
 % Store results in structure for output
 results.S = S;
 results.I = I;
 results.R = par.N-S-I;
 results.a = a;
-results.costInf = costInf;
-results.costCont = costCont;
+results.costInf = costInfPP.*par.N;
+results.costCont = costContPP.*par.N;
 
 % Calculate objective function
-f = norm(costInf(:, end)+costCont(:, end), par.normP)/sum(par.N);
+f = norm(costInfPP(:, end)+costContPP(:, end), par.normP);
 
 
 

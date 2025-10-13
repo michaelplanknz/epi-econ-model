@@ -1,9 +1,9 @@
 function par = getPar()
 
 % Number of days to simulate
-par.tMax = 400;
+par.tMax = 600;
 
-par.dt = 0.1;
+par.dt = 0.01;
 
 % Spacing of time mesh points for defining control function (days)
 par.meshSpace = 10;
@@ -33,7 +33,7 @@ par.costlin = 0;
 par.costquad = 0.04;
 
 % Cost per infection in each group
-par.costPerInf = 1;
+par.costPerInf = 4;
 
 
 

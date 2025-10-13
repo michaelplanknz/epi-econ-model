@@ -1,7 +1,7 @@
-function results = getResultsAnalytic(probType, par)
+function results = getResultsAnalytic(probType, a0, par)
 
 maxTries = 100;
-relTol = 1e-8;
+relTol = 1e-10;
 
 t = 0:par.dt:par.tMax;
 
@@ -13,8 +13,7 @@ else
     error('probType must be "cent" or "decent')
 end
 
-% Initialise at uncontrolled state
-a = ones(par.nGroups, length(t));
+a = a0;
 
 convFlag = false;
 iTry = 1;
