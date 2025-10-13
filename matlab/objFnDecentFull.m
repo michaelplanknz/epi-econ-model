@@ -6,8 +6,8 @@ tMesh = 0:par.meshSpace:par.tMax;
 
 % Interpolate the control function a(t) between meshpoints as a piecewise
 % cubic
-a = pchip(tMesh, x', t);
-aBG = pchip(tMesh, xBG', t);
+a = max(0, min(1, pchip(tMesh, x', t)));
+aBG = max(0, min(1, pchip(tMesh, xBG', t)));
 
 % x is just the control parameters for the focal group
 % solveModel requires focal and background parameters for both groups so

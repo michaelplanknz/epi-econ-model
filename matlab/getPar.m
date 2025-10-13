@@ -21,7 +21,7 @@ par.I0 = 1e-5;
 par.normP = 1;
 
 % Population size (in each group)
-par.N = 1;
+par.N = 5e6;
 par.nGroups = length(par.N);
 
 % Transmission rate matrix

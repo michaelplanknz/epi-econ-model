@@ -22,10 +22,10 @@ h = figure(1);
 h.Position = [     240         125        1024         744];
 tiledlayout(2, 2, "TileSpacing", "compact");
 nexttile;
-plot(t, resultsCent.R)
+plot(t, resultsCent.R/sum(par.N))
 hold on
 set(gca, 'ColorOrderIndex', 1);
-plot(t, results_u.R, '--')
+plot(t, results_u.R/sum(par.N), '--')
 plot(t, resultsCent.a, 'LineWidth', 2)
 if par.nGroups > 1
     lbls = ["R_"+groupLbls; "R_"+groupLbls+"_u"; "a_"+groupLbls ];
@@ -75,10 +75,10 @@ h = figure(2);
 h.Position = [    360         183        1024         755];
 tiledlayout(2, 2, "TileSpacing", "compact");
 nexttile;
-plot(t, resultsDecent.R)
+plot(t, resultsDecent.R/sum(par.N))
 hold on
 set(gca, 'ColorOrderIndex', 1);
-plot(t, results_u.R, '--')
+plot(t, results_u.R/sum(par.N), '--')
 plot(t, resultsDecent.a, 'LineWidth', 2)
 grid on
 if par.nGroups > 1
@@ -91,7 +91,7 @@ xlabel('time (days)')
 
 
 nexttile;
-plot(t, (resultsDecent.costInf + resultsDecent.costCont).*par.N)
+plot(t, resultsDecent.costInf + resultsDecent.costCont)
 hold on
 set(gca, 'ColorOrderIndex', 1);
 plot(t, results_u.costInf + results_u.costCont, '--')
@@ -107,7 +107,7 @@ xlabel('time (days)')
 
 
 nexttile;
-plot(t, resultsDecent.costInf.*par.N, t, resultsDecent.costCont.*par.N)
+plot(t, resultsDecent.costInf, t, resultsDecent.costCont)
 hold on
 set(gca, 'ColorOrderIndex', 1);
 plot(t, results_u.costInf, '--')

@@ -25,7 +25,7 @@ while iTry <= maxTries * ~convFlag
     [S, I, ~] = solveModelFull(a, a, par);
 
     % Update a
-    a = max(0, min(1, (par.costlin + 2*par.costquad)./(2*par.costquad + coeff*par.costPerInf.*  (par.Beta*I)./par.N  .*  S(:, end)) ));
+    a = max(0, min(1, (par.costlin + 2*par.costquad)./(2*par.costquad + coeff*par.costPerInf.*  (par.Beta*I)./par.N  .*  S(:, end)./par.N  ) ));
 
     % Test for convergence
     convFlag = max(max(abs(a-aSav))) / max(max(abs(aSav))) <= relTol;

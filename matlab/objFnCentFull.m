@@ -5,7 +5,7 @@ tMesh = 0:par.meshSpace:par.tMax;
 
 % Interpolate the control function a(t) between meshpoints as a piecewise
 % cubic
-a = pchip(tMesh, x, t);
+a = max(0, min(1, pchip(tMesh, x, t)));
 
 % Solve SIR model
 [S, I, ~] = solveModelFull(a, a, par);
@@ -23,7 +23,7 @@ results.costInf = costInf;
 results.costCont = costCont;
 
 % Calculate objective function
-f = norm(costInf(:, end)+costCont(:, end), par.normP);
+f = norm(costInf(:, end)+costCont(:, end), par.normP)/sum(par.N);
 
 
 
