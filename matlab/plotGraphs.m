@@ -8,7 +8,15 @@ fIn = outFolder + "results.mat";
 load(fIn);
 
 
+
+% Compute elimination costs
+Celim = calcElimCost(par);
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % Plotting
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
 % Centralised problem
 h = figure(1);
 h.Position = [     240         125        1024         744];
@@ -124,7 +132,7 @@ sgtitle('decentralized control')
 
 % Cost comparison
 figure(3)
-plot(t, results_u.costInf, t, resultsDecentFull.costInf + resultsDecentFull.costCont, t, resultsCentFull.costInf + resultsCentFull.costCont, t, Celim_per_unit_time*t )
+plot(t, results_u.costInf, t, resultsDecentFull.costInf + resultsDecentFull.costCont, t, resultsCentFull.costInf + resultsCentFull.costCont, t, Celim*t )
 grid on
 legend('unmitigated', 'decentralised response', 'centralised response', 'elimination response', 'Location', 'southeast')
 xlabel('time (days)')
