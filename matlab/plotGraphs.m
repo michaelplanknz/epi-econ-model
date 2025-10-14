@@ -8,9 +8,12 @@ fIn = outFolder + "results.mat";
 load(fIn);
 
 
+% Main results use cost per infection = 1 and control costs are relative to this
+% Use this to scale to all costs to $
+dollarsPerInf = 10000;
 
 % Compute elimination costs
-Celim = calcElimCost(par);
+[Celim, aElimOut] = calcElimCost(par);
 
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -19,8 +22,8 @@ Celim = calcElimCost(par);
 
 % Centralised problem
 h = figure(1);
-h.Position = [     240         125        1024         744];
-tiledlayout(2, 2, "TileSpacing", "compact");
+h.Position = [     240         125        1024         380];
+tiledlayout(1, 2, "TileSpacing", "compact");
 nexttile;
 plot(t, resultsCent.R/sum(par.N))
 hold on
@@ -37,10 +40,10 @@ grid on
 xlabel('time (days)')
 
 nexttile;
-plot(t, resultsCent.costInf + resultsCent.costCont)
+plot(t, (resultsCent.costInf + resultsCent.costCont)*dollarsPerInf/1e9)
 hold on
 set(gca, 'ColorOrderIndex', 1);
-plot(t, results_u.costInf + results_u.costCont, '--')
+plot(t, (results_u.costInf + results_u.costCont)*dollarsPerInf/1e9, '--')
 if par.nGroups > 1
     lbls = ["cost_"+groupIDs; "cost_"+groupIDs+"_u"];
 else
@@ -48,23 +51,23 @@ else
 end
 legend(lbls, 'Location', 'southeast')
 grid on
-ylabel('cumulative aggregate cost')
+ylabel('cumulative aggregate cost ($b)')
 xlabel('time (days)')
 
-nexttile;
-plot(t, resultsCent.costInf, t, resultsCent.costCont)
-hold on
-set(gca, 'ColorOrderIndex', 1);
-plot(t, results_u.costInf, '--')
-if par.nGroups > 1
-    lbls = ["inf cost_"+groupIDs; "cont cost_"+groupIDs; "inf cost_"+groupIDs+"_u"];
-else
-    lbls = ["inf cost", "cont cost", "inf cost_u"];
-end
-legend(lbls, 'Location', 'southeast')
-grid on
-ylabel('cumulative aggregate cost')
-xlabel('time (days)')
+% nexttile;
+% plot(t, resultsCent.costInf, t, resultsCent.costCont)
+% hold on
+% set(gca, 'ColorOrderIndex', 1);
+% plot(t, results_u.costInf, '--')
+% if par.nGroups > 1
+%     lbls = ["inf cost_"+groupIDs; "cont cost_"+groupIDs; "inf cost_"+groupIDs+"_u"];
+% else
+%     lbls = ["inf cost", "cont cost", "inf cost_u"];
+% end
+% legend(lbls, 'Location', 'southeast')
+% grid on
+% ylabel('cumulative aggregate cost')
+% xlabel('time (days)')
 
 sgtitle('centralized control')
 drawnow
@@ -72,8 +75,8 @@ drawnow
 
 % Decentralised problem
 h = figure(2);
-h.Position = [    360         183        1024         755];
-tiledlayout(2, 2, "TileSpacing", "compact");
+h.Position = [    360         183        1024         380];
+tiledlayout(1, 2, "TileSpacing", "compact");
 nexttile;
 plot(t, resultsDecent.R/sum(par.N))
 hold on
@@ -91,10 +94,10 @@ xlabel('time (days)')
 
 
 nexttile;
-plot(t, resultsDecent.costInf + resultsDecent.costCont)
+plot(t, (resultsDecent.costInf + resultsDecent.costCont)*dollarsPerInf/1e9)
 hold on
 set(gca, 'ColorOrderIndex', 1);
-plot(t, results_u.costInf + results_u.costCont, '--')
+plot(t, (results_u.costInf + results_u.costCont)*dollarsPerInf/1e9, '--')
 grid on
 if par.nGroups > 1
     lbls = ["cost_"+groupIDs; "cost_"+groupIDs+"_u"];
@@ -102,33 +105,66 @@ else
     lbls = ["cost", "cost_u"];
 end
 legend(lbls, 'Location', 'southeast')
-ylabel('cumulative aggregate cost')
+ylabel('cumulative aggregate cost ($b)')
 xlabel('time (days)')
 
 
-nexttile;
-plot(t, resultsDecent.costInf, t, resultsDecent.costCont)
-hold on
-set(gca, 'ColorOrderIndex', 1);
-plot(t, results_u.costInf, '--')
-if par.nGroups > 1
-    lbls = ["inf cost_"+groupIDs; "cont cost_"+groupIDs; "inf cost_"+groupIDs+"_u"];
-else
-    lbls = ["inf cost", "cont cost", "inf cost_u"];
-end
-legend(lbls, 'Location', 'southeast')
-grid on
-ylabel('cumulative aggregate cost')
-xlabel('time (days)')
+% nexttile;
+% plot(t, resultsDecent.costInf, t, resultsDecent.costCont)
+% hold on
+% set(gca, 'ColorOrderIndex', 1);
+% plot(t, results_u.costInf, '--')
+% if par.nGroups > 1
+%     lbls = ["inf cost_"+groupIDs; "cont cost_"+groupIDs; "inf cost_"+groupIDs+"_u"];
+% else
+%     lbls = ["inf cost", "cont cost", "inf cost_u"];
+% end
+% legend(lbls, 'Location', 'southeast')
+% grid on
+% ylabel('cumulative aggregate cost')
+% xlabel('time (days)')
 
 sgtitle('decentralized control')
 
 
 
+% For the purposes of plotting, simulate the elimination response to sporadic
+% outbreaks
+aElim = ones(size(t));
+
+% Assume outbreaks are evenly spaced with the first one at 0.5 * expected
+% spacing
+tOut1 = 0.5/par.r;
+
+% Mean outbreak duration
+tDur = log(par.xOutbreak)/(par.Gamma-par.Beta*par.alpha_TTI*aElimOut^2);
+
+tRel = mod(t-tOut1, 1/par.r);
+aElim(tRel >= 0 & tRel < tDur) = aElimOut;
+
+
+
 % Cost comparison
-figure(3)
-plot(t, results_u.costInf, t, resultsDecent.costInf + resultsDecent.costCont, t, resultsCent.costInf + resultsCent.costCont, t, Celim*t )
+h = figure(3);
+h.Position = [703         452        1024         380];
+tiledlayout(1, 2, "TileSpacing", "compact")
+nexttile;
+plot(t, results_u.costInf*dollarsPerInf/1e9)
+hold on
+plot(t, (resultsDecent.costInf + resultsDecent.costCont)*dollarsPerInf/1e9)
+plot(t, (resultsCent.costInf + resultsCent.costCont)*dollarsPerInf/1e9)
+plot(t, Celim*t*dollarsPerInf/1e9 )
 grid on
-legend('unmitigated', 'decentralised response', 'centralised response', 'elimination response', 'Location', 'southeast')
 xlabel('time (days)')
-ylabel('cost (units of k)')
+ylabel('cost ($b)')
+legend('unmitigated', 'decentralised response', 'centralised response', 'elimination response', 'Location', 'southeast')
+nexttile
+plot(t, results_u.a)
+hold on
+plot(t, resultsDecent.a)
+plot(t, resultsCent.a)
+plot(t, aElim)
+ylim([0, 1])
+grid on
+xlabel('time (days)')
+ylabel('a(t)')

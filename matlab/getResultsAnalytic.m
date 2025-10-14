@@ -39,7 +39,7 @@ if ~convFlag
     fprintf('Waring: analytic method not converged\n')
 end
 
-% [Sn, In, ~] = solveModelFull(a, a, par);
+
 
 
 % Calculate infection and control costs per person

@@ -28,12 +28,12 @@ par.nGroups = length(par.N);
 %par.Beta = 0.3*[1.6 0.4; 0.4 0.1];
 par.Beta = 0.4;
 
-% Linear and quadratic cost coefficients in each group
+% Linear and quadratic cost coefficients in each group ($1000s)
 par.costlin = 0;
-par.costquad = 0.04;
+par.costquad = 0.02;
 
-% Cost per infection in each group
-par.costPerInf = 4;
+% Cost per infection in each group ($1000s)
+par.costPerInf = 1;
 
 
 
@@ -45,12 +45,12 @@ par.xOutbreak = 20;
 % Outbreak frequency (days-1)
 par.r = 1/150;
 
-% Border closure cost per unit time (set to 5% of cost of reducing Reff to
+% Border closure cost per unit time (set to 10% of cost of reducing Reff to
 % 1)
 R0 = eigs(par.Beta, [], 1)/par.Gamma;
 costlin_avg = sum(par.costlin.*par.N);
 costquad_avg = sum(par.costquad.*par.N);
-par.b = 0.05 * (costlin_avg*(1-sqrt(1/R0)) + costquad_avg*(1-sqrt(1/R0))^2);
+par.b = 0.1 * (costlin_avg*(1-sqrt(1/R0)) + costquad_avg*(1-sqrt(1/R0))^2);
 
 % Fraction of country under control measures to eliminate border related
 % outbreaks
