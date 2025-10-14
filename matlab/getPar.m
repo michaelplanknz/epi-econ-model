@@ -3,7 +3,7 @@ function par = getPar()
 % Number of days to simulate
 par.tMax = 600;
 
-par.dt = 0.01;
+par.dt = 0.1;
 
 % Spacing of time mesh points for defining control function (days)
 par.meshSpace = 10;

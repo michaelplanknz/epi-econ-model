@@ -65,16 +65,32 @@ xOptCent = fmincon(@(x)objFnCentFull(x, par), x0, [], [], [], [], zeros(nMeshPts
 
 % Initialise at uncontrolled state
 a0 = ones(par.nGroups, length(t));
-resultsDecent0 = getResultsAnalytic("decent", a0, par);
+resultsDecent1 = getResultsAnalytic("decent", a0, par);
 
 
 % Initialise at centralised solution
 a0 = resultsCent.a;
-resultsDecent1 = getResultsAnalytic("decent", a0, par);
+resultsDecent2 = getResultsAnalytic("decent", a0, par);
+
+a1 = resultsDecent1.a;
+a2 = resultsDecent2.a;
+
+w11 = objFnDecentFull(a1, a1, par)
+w21 = objFnDecentFull(a2, a1, par)
+w22 = objFnDecentFull(a2, a2, par)
+w12 = objFnDecentFull(a1, a2, par)
 
 
-objFnDecentFull(resultsDecent0.a, resultsDecent1.a, par)
-objFnDecentFull(resultsDecent1.a, resultsDecent0.a, par)
+z = 0:0.01:1.5;
+
+for ii = 1:length(z)
+    wz1(ii) = objFnDecentFull(1 - z(ii)*(1-a1), a1, par);
+    wz2(ii) = objFnDecentFull(1 - z(ii)*(1-a2), a2, par);
+end
+
+figure;
+plot(z, wz1, z, wz2);
+
 
 
 fOut = outFolder + "results.mat";
