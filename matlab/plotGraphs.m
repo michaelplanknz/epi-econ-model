@@ -6,7 +6,7 @@ outFolder = '../output/';
 figFolder = '../figures/';
 
 % Set to true to save Figures as .png files
-saveFlag = true;
+saveFlag = false;
 
 
 % Load previously saved model results
