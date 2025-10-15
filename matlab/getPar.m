@@ -45,9 +45,8 @@ par.xOutbreak = 20;
 % Outbreak frequency (days-1)
 par.r = 1/150;
 
-% Border closure cost per unit time (set to 10% of cost of reducing Reff to
-% 1)
-R0 = eigs(par.Beta, [], 1)/par.Gamma;
+% Border closure cost per unit time (set to 10% of cost of reducing Reff from 1.5 to 1 with NPIs)
+R0 = 1.5;
 costlin_avg = sum(par.costlin.*par.N);
 costquad_avg = sum(par.costquad.*par.N);
 par.b = 0.1 * (costlin_avg*(1-sqrt(1/R0)) + costquad_avg*(1-sqrt(1/R0))^2);

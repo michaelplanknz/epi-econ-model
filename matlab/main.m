@@ -17,14 +17,14 @@ relTol = 1e-4;
 par = getPar();
 
 % Define parameters to vary
-beta_arr       = [0.3   0.3   0.3   0.6   0.6   0.6];
+Beta_arr       = [0.3   0.3   0.3   0.6   0.6   0.6];
 costPerInf_arr = [0.4   1.2   2.0   0.4   1.2   2.0];
-nScenarios = length(beta_arr);
+nScenarios = length(Beta_arr);
 
 for iScenario = 1:nScenarios
 
     %Set scneario-dependent parameters
-    par.beta = beta_arr(iScenario);
+    par.Beta = Beta_arr(iScenario);
     par.costPerInf = costPerInf_arr(iScenario);
 
     %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
