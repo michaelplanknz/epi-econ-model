@@ -25,5 +25,8 @@ results.costCont = costContPP.*par.N;
 % Calculate objective function
 f = norm(costInfPP(:, end)+costContPP(:, end), par.normP);
 
+% Opptional - if under HIT add cost of infecting enough people to reach HIT
+% R0 = par.Beta/par.Gamma;
+% f = norm(costInfPP(:, end)+costContPP(:, end), par.normP) + par.costPerInf*max(0, S(end)/par.N-1/R0 );
 
 

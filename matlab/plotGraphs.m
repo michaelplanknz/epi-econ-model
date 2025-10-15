@@ -5,8 +5,11 @@ close all
 outFolder = '../output/';
 figFolder = '../figures/';
 
+% Set to true to save Figures as .png files
+saveFlag = false;
 
 
+% Load previously saved model results
 fIn = outFolder + "results.mat";
 load(fIn);
 
@@ -151,7 +154,9 @@ for iScenario = 1:nScenarios
     ylabel('cumulative cost ($bn)')
     title('(b) costs')
     
-    fName = "fig"+iScenario+".png";
-    saveas(h, figFolder+fName);
+    if saveFlag
+        fName = "fig"+iScenario+".png";
+        saveas(h, figFolder+fName);
+    end
 
 end

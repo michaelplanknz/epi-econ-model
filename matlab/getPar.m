@@ -26,14 +26,14 @@ par.nGroups = length(par.N);
 
 % Transmission rate matrix
 %par.Beta = 0.3*[1.6 0.4; 0.4 0.1];
-par.Beta = 0.4;
+par.Beta = 0.3;
 
 % Linear and quadratic cost coefficients in each group ($1000s)
 par.costlin = 0;
 par.costquad = 0.02;
 
 % Cost per infection in each group ($1000s)
-par.costPerInf = 1;
+par.costPerInf = 0.1;
 
 
 
