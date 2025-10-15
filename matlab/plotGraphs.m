@@ -8,8 +8,8 @@ fIn = outFolder + "results.mat";
 load(fIn);
 
 
-% Main results use cost per infection = 1 and control costs are relative to this
-% Use this to scale to all costs to $
+% Main results use cost per infection measured in $10,000s
+% This scaling factor converts all costs to $
 dollarsPerInf = 10000;
 
 % Compute elimination costs
