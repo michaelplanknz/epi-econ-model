@@ -55,7 +55,7 @@ else
 end
 legend(lbls, 'Location', 'southeast')
 grid on
-ylabel('cumulative cost ($b)')
+ylabel('cumulative cost ($bn)')
 xlabel('time (days)')
 title('(b) costs - centralized control')
 
@@ -92,7 +92,7 @@ else
     lbls = ["total cost", "infection cost", "control cost", "total cost (unmitigated)"];
 end
 legend(lbls, 'Location', 'southeast')
-ylabel('cumulative aggregate cost ($b)')
+ylabel('cumulative cost ($bn)')
 xlabel('time (days)')
 title('(d) costs - decentralized control')
 
@@ -118,17 +118,8 @@ aElim(tRel >= 0 & tRel < tDur) = aElimOut;
 h = figure(3);
 h.Position = [703         452        1024         380];
 tiledlayout(1, 2, "TileSpacing", "compact")
+
 nexttile;
-plot(t, results_u.costInf*dollarsPerInf/1e9)
-hold on
-plot(t, (resultsDecent.costInf + resultsDecent.costCont)*dollarsPerInf/1e9)
-plot(t, (resultsCent.costInf + resultsCent.costCont)*dollarsPerInf/1e9)
-plot(t, Celim*t*dollarsPerInf/1e9 )
-grid on
-xlabel('time (days)')
-ylabel('cost ($b)')
-legend('unmitigated', 'decentralised response', 'centralised response', 'elimination response', 'Location', 'southeast')
-nexttile
 plot(t, results_u.a)
 hold on
 plot(t, resultsDecent.a)
@@ -138,3 +129,17 @@ ylim([0, 1])
 grid on
 xlabel('time (days)')
 ylabel('a(t)')
+legend('unmitigated', 'decentralised response', 'centralised response', 'elimination response', 'Location', 'southeast')
+title('(a) relative contact rate')
+
+nexttile;
+plot(t, results_u.costInf*dollarsPerInf/1e9)
+hold on
+plot(t, (resultsDecent.costInf + resultsDecent.costCont)*dollarsPerInf/1e9)
+plot(t, (resultsCent.costInf + resultsCent.costCont)*dollarsPerInf/1e9)
+plot(t, Celim*t*dollarsPerInf/1e9 )
+grid on
+xlabel('time (days)')
+ylabel('cumulative cost ($bn)')
+title('(b) costs')
+
