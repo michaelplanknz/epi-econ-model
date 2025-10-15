@@ -18,7 +18,7 @@ par = getPar();
 
 % Define parameters to vary
 Beta_arr       = [0.3   0.3   0.3   0.6   0.6   0.6];
-costPerInf_arr = [0.4   1.2   2.0   0.4   1.2   2.0];
+costPerInf_arr = [0.1   0.5   1.2   0.1   0.5   1.2];
 nScenarios = length(Beta_arr);
 
 for iScenario = 1:nScenarios

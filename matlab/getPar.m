@@ -45,16 +45,13 @@ par.xOutbreak = 20;
 % Outbreak frequency (days-1)
 par.r = 1/150;
 
-% Border closure cost per unit time (set to 10% of cost of reducing Reff from 1.5 to 1 with NPIs)
-R0 = 1.5;
-costlin_avg = sum(par.costlin.*par.N);
-costquad_avg = sum(par.costquad.*par.N);
-par.b = 0.1 * (costlin_avg*(1-sqrt(1/R0)) + costquad_avg*(1-sqrt(1/R0))^2);
+% Border closure cost per unit time
+par.b = 500;
 
 % Fraction of country under control measures to eliminate border related
 % outbreaks
-par.controlFrac = 0.37;
+par.controlFrac = 0.4;
 
 % Multiplicative effect of TTI measures on R0
-par.alpha_TTI = 0.75;
+par.alpha_TTI = 0.8;
 
