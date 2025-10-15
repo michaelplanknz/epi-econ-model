@@ -20,10 +20,11 @@ dollarsPerInf = 10000;
 % Plotting
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
-% Centralised problem
 h = figure(1);
-h.Position = [     240         125        1024         380];
-tiledlayout(1, 2, "TileSpacing", "compact");
+h.Position = [     240         125        1024         760];
+tiledlayout(2, 2, "TileSpacing", "compact");
+
+% Centralised problem
 nexttile;
 plot(t, resultsCent.R/sum(par.N))
 hold on
@@ -33,50 +34,33 @@ plot(t, resultsCent.a, 'LineWidth', 2)
 if par.nGroups > 1
     lbls = ["R_"+groupLbls; "R_"+groupLbls+"_u"; "a_"+groupLbls ];
 else
-    lbls = ["R", "R_u", "a"];
+    lbls = ["R(t)", "R(t) (unmitigated)", "a(t)"];
 end
 legend(lbls, 'Location', 'southeast')
 grid on
 xlabel('time (days)')
+title('(a) epidemic dynamics - centralized control')
 
 nexttile;
 plot(t, (resultsCent.costInf + resultsCent.costCont)*dollarsPerInf/1e9)
 hold on
+plot(t, resultsCent.costInf*dollarsPerInf/1e9)
+plot(t, resultsCent.costCont*dollarsPerInf/1e9)
 set(gca, 'ColorOrderIndex', 1);
 plot(t, (results_u.costInf + results_u.costCont)*dollarsPerInf/1e9, '--')
 if par.nGroups > 1
     lbls = ["cost_"+groupIDs; "cost_"+groupIDs+"_u"];
 else
-    lbls = ["cost", "cost_u"];
+    lbls = ["total cost", "infection cost", "control cost", "total cost (unmitigated)"];
 end
 legend(lbls, 'Location', 'southeast')
 grid on
-ylabel('cumulative aggregate cost ($b)')
+ylabel('cumulative cost ($b)')
 xlabel('time (days)')
-
-% nexttile;
-% plot(t, resultsCent.costInf, t, resultsCent.costCont)
-% hold on
-% set(gca, 'ColorOrderIndex', 1);
-% plot(t, results_u.costInf, '--')
-% if par.nGroups > 1
-%     lbls = ["inf cost_"+groupIDs; "cont cost_"+groupIDs; "inf cost_"+groupIDs+"_u"];
-% else
-%     lbls = ["inf cost", "cont cost", "inf cost_u"];
-% end
-% legend(lbls, 'Location', 'southeast')
-% grid on
-% ylabel('cumulative aggregate cost')
-% xlabel('time (days)')
-
-sgtitle('centralized control')
-drawnow
+title('(b) costs - centralized control')
 
 
 % Decentralised problem
-h = figure(2);
-h.Position = [    360         183        1024         380];
-tiledlayout(1, 2, "TileSpacing", "compact");
 nexttile;
 plot(t, resultsDecent.R/sum(par.N))
 hold on
@@ -87,44 +71,30 @@ grid on
 if par.nGroups > 1
     lbls = ["R_"+groupLbls; "R_"+groupLbls+"_u"; "a_"+groupLbls ];
 else
-    lbls = ["R", "R_u", "a"];
+    lbls = ["R(t)", "R(t) (unmitigated)", "a(t)"];
 end
 legend(lbls, 'Location', 'southeast')
 xlabel('time (days)')
+title('(c) epidemic dynamics - decentralized control')
 
 
 nexttile;
 plot(t, (resultsDecent.costInf + resultsDecent.costCont)*dollarsPerInf/1e9)
 hold on
+plot(t, resultsDecent.costInf*dollarsPerInf/1e9)
+plot(t, resultsDecent.costCont*dollarsPerInf/1e9)
 set(gca, 'ColorOrderIndex', 1);
 plot(t, (results_u.costInf + results_u.costCont)*dollarsPerInf/1e9, '--')
 grid on
 if par.nGroups > 1
     lbls = ["cost_"+groupIDs; "cost_"+groupIDs+"_u"];
 else
-    lbls = ["cost", "cost_u"];
+    lbls = ["total cost", "infection cost", "control cost", "total cost (unmitigated)"];
 end
 legend(lbls, 'Location', 'southeast')
 ylabel('cumulative aggregate cost ($b)')
 xlabel('time (days)')
-
-
-% nexttile;
-% plot(t, resultsDecent.costInf, t, resultsDecent.costCont)
-% hold on
-% set(gca, 'ColorOrderIndex', 1);
-% plot(t, results_u.costInf, '--')
-% if par.nGroups > 1
-%     lbls = ["inf cost_"+groupIDs; "cont cost_"+groupIDs; "inf cost_"+groupIDs+"_u"];
-% else
-%     lbls = ["inf cost", "cont cost", "inf cost_u"];
-% end
-% legend(lbls, 'Location', 'southeast')
-% grid on
-% ylabel('cumulative aggregate cost')
-% xlabel('time (days)')
-
-sgtitle('decentralized control')
+title('(d) costs - decentralized control')
 
 
 
