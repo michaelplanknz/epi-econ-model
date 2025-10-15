@@ -13,5 +13,5 @@ xb = x(2:2:end);
 FOI = calcFOI(I, aFocal, aBG, par);
 
 % Evaluate heuristic contact function
-a = (1-xa.*S)./(1+xb.*FOI.*S);
+a = (1-xa.*S./par.N)./(1+xb.*FOI.*S./par.N);
 

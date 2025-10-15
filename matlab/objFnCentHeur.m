@@ -1,14 +1,10 @@
-function [f, results] = objFnCentFull(x, par)
-
-t = 0:par.dt:par.tMax;
-tMesh = 0:par.meshSpace:par.tMax;
-
-% Interpolate the control function a(t) between meshpoints as a piecewise
-% cubic
-a = max(0, min(1, pchip(tMesh, x, t)));
+function [f, results] = objFnCentHeur(x, par)
 
 % Solve SIR model
-[S, I, ~] = solveModelFull(a, a, par);
+[S, I, ~] = solveModel(x, x, par);
+
+% Evaluate heuristic function for contact rate a(t)
+a = myContModel(x, S, I, par);
 
 % Calculate infection and control costs per person
 costInfPP = par.costPerInf.*(1-S./par.N);

@@ -1,4 +1,4 @@
-function Celim = calcElimCost(par)
+function [Celim, aOptElim] = calcElimCost(par)
 
 % Function to calculatet the elimination cost per unit time according to
 % the model

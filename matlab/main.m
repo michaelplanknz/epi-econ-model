@@ -13,116 +13,79 @@ outFolder = '../output/';
 maxReps = 100;
 relTol = 1e-4;
 
-% Get model parameters
+% Get default model parameters
 par = getPar();
 
+% Define parameters to vary
+Beta_arr       = [0.3   0.3   0.3   0.6   0.6   0.6];
+costPerInf_arr = [0.4   1.2   2.0   0.4   1.2   2.0];
+nScenarios = length(Beta_arr);
 
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-% Solve unmitigated epidemic
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+for iScenario = 1:nScenarios
 
-% Set up time vector, and time mesh points for defining control function
-t = 0:par.dt:par.tMax;
-tMesh = 0:par.meshSpace:par.tMax;
+    %Set scneario-dependent parameters
+    par.Beta = Beta_arr(iScenario);
+    par.costPerInf = costPerInf_arr(iScenario);
 
-% Define no control state
-xu = repmat([0; 0], par.nGroups, 1);
+    %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+    % Solve unmitigated epidemic
+    %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+    
+    % Set up time vector, and time mesh points for defining control function
+    t = 0:par.dt:par.tMax;
+    tMesh = 0:par.meshSpace:par.tMax;
+    
+    % Define no control state
+    nMeshPts = length(tMesh);
+    xu = ones(par.nGroups, nMeshPts); 
+    
+    % Get model solution and costs for no control 
+    [~, results_u(iScenario)] = objFnCentFull(xu, par);
+    
+    
+    
+    %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+    % Solve centralised problem
+    %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+    
+    % OLD METHOD (needed if initialising at analytical approximation
+    % doesn't work)
+    % Solve central planner's problem with heuristic control function
+%     x0 = [0, 0]; 
+%     xOptHeur = fmincon(@(x)objFnCentHeur(x, par), x0, [], [], [], [], zeros(size(x0)), [1 inf] );
+%     
+%     % Get model solution and costs for heuristic optimum
+%     [f, resultsCentHeur(iScenario)] = objFnCentHeur(xOptHeur, par);
+%     
+%     % Use heuristic solution to set initial condition for full optimization
+%     x0 = interp1(t', resultsCentHeur.a', tMesh)';
+    
+    % Initialise at uncontrolled state
+     a0 = ones(par.nGroups, length(t));
 
-% Get model solution and costs for no control 
-[fu, results_u] = objFnCent(xu, par);
+     % Get analytical approximation to optimal centralised control
+     results_tmp = getResultsAnalytic("cent", a0, par);
+
+     % Use this to set initial condition for full optimization routine
+     x0 = interp1(t, results_tmp.a, tMesh);
+
+    % Solve central planner's problem with full time-dependent control variable
+    xOptCent = fmincon(@(x)objFnCentFull(x, par), x0, [], [], [], [], zeros(nMeshPts, par.nGroups), ones(nMeshPts, par.nGroups) );
+    
+    % Get model solution and costs for full optimum
+    [~, resultsCent(iScenario)] = objFnCentFull(xOptCent, par);
+    
 
 
+    %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+    % Solve decentralised problem with analytic method
+    %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+    
+    % Initialise at uncontrolled state
+    a0 = ones(par.nGroups, length(t));
+    resultsDecent(iScenario) = getResultsAnalytic("decent", a0, par);
 
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-% Solve centralised problem
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-
-% Solve central planner's problem with heuristic control function
-x0 = xu; 
-xOptCent = fmincon(@(x)objFnCent(x, par), x0, [], [], [], [], zeros(size(x0)), [] );
-
-% Get model solution and costs for heuristic optimum
-[f, resultsCent] = objFnCent(xOptCent, par);
-
-% Set initial condition for the full optimization by interpolating the
-% heuristic function and the time mesh points
-nMeshPts = length(tMesh);
-x0Full = interp1(t', resultsCent.a', tMesh)';
-
-% Solve central planner's problem with full time-dependent control variable
-xOptCentFull = fmincon(@(x)objFnCentFull(x, par), x0Full, [], [], [], [], zeros(nMeshPts, par.nGroups), ones(nMeshPts, par.nGroups) );
-
-% Get model solution and costs for full optimum
-[~, resultsCentFull] = objFnCentFull(xOptCentFull, par);
-
-
-
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-% Solve decentralised problem
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-
-% Start by setting background behaviour to the solution to the centralised
-% problem with heuristic control function
-xOptDecent = xOptCent;
-
-iRep = 1;
-convFlag = false;
-while iRep <= maxReps & ~convFlag 
-    xSav = xOptDecent;
-    % Optimize each group in turn 
-    for iGroup = 1:par.nGroups
-        % Indices of x relating to the current group
-        groupInd = [1, 2] + 2*(iGroup-1);
-        xOptGroup = fmincon(@(x)objFnDecent(x, xOptDecent, iGroup, par), xOptDecent(groupInd), [], [], [], [], zeros(2, 1), [] );
-        xOptDecent(groupInd) = xOptGroup;
-    end
-    convFlag = norm(xOptDecent-xSav)/norm(xSav) < relTol;
-    iRep = iRep+1;
 end
-
-if ~convFlag
-    fprintf('Warning: decentralised problem with heuristic control function has failed to converge after %i iterations\n', maxReps)
-end
-
-% Get model solution and costs for heuristic optimum
-[f, resultsDecent] = objFnDecentBoth(xOptDecent, xOptDecent, par);
-
-% Set initial condition for the full optimization by interpolating the
-% heuristic function and the time mesh points
-xOptDecentFull = interp1(t', resultsDecent.a', tMesh)';
-
-iRep = 1;
-convFlag = false;
-while iRep <= maxReps & ~convFlag 
-    % Start by setting background behaviour to the solution central problem
-    xSav = xOptDecentFull;
-    % Optimize each group in turn 
-    for iGroup = 1:par.nGroups
-        % Indices of x relating to the current group
-        xOptGroup = fmincon(@(x)objFnDecentFull(x, xOptDecentFull, iGroup, par), xOptDecentFull(:, iGroup), [], [], [], [], zeros(nMeshPts, 1), ones(nMeshPts, 1) );
-        xOptDecentFull(:, iGroup) = xOptGroup;
-    end
-    convFlag = norm(xOptDecentFull-xSav)/norm(xSav) < relTol;
-    iRep = iRep+1;
-end
-
-if ~convFlag
-    fprintf('Warning: decentralised problem with full control function has failed to converge after %i iterations\n', maxReps)
-end
-
-xOptDecentFull = xOptDecentFull';
-
-% Get model solution and costs for full optimum
-[~, resultsDecentFull] = objFnDecentFullBoth(xOptDecentFull, xOptDecentFull, par);
-
-
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-% Solve centralised and decentralised problem with Shaun's method
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-
-resultsCentAnalytic = getResultsAnalytic("cent", par);
-resultsDecentAnalytic = getResultsAnalytic("decent", par);
-
 
 fOut = outFolder + "results.mat";
 save(fOut);
