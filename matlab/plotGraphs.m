@@ -13,6 +13,10 @@ saveFlag = false;
 fIn = outFolder + "results.mat";
 load(fIn);
 
+% Select values of Beta and costPerInf to plot
+Beta_arr       = [0.3   0.3   0.3   0.6   0.6   0.6];
+costPerInf_arr = [0.1   0.5   1.2   0.1   0.5   1.2];
+nPlots = length(Beta_arr);
 
 % Main results use cost per infection measured in $10,000s
 % This scaling factor converts all costs to $
@@ -20,18 +24,20 @@ dollarsPerInf = 10000;
 
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-% Plotting
+% Plotting - individual scenario plots
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-for iScenario = 1:nScenarios
+for iPlot = 1:nPlots
+
+    iScenario = find(Beta_list == Beta_arr(iPlot) & costPerInf_list == costPerInf_arr(iPlot));
 
     %Set scneario-dependent parameters
-    par.Beta = Beta_arr(iScenario);
-    par.costPerInf = costPerInf_arr(iScenario);
+    par.Beta = Beta_arr(iPlot);
+    par.costPerInf = costPerInf_arr(iPlot);
 
     % Compute elimination costs
     [Celim, aElimOut] = calcElimCost(par);
 
-    h = figure(2*iScenario-1);
+    h = figure(2*iPlot-1);
     h.Position = [     240         125        1024         760];
     tiledlayout(2, 2, "TileSpacing", "compact");
     
@@ -126,7 +132,7 @@ for iScenario = 1:nScenarios
     
     
     % Cost comparison
-    h = figure(2*iScenario);
+    h = figure(2*iPlot);
     h.Position = [703         452        1024         380];
     tiledlayout(1, 2, "TileSpacing", "compact")
     
@@ -155,8 +161,19 @@ for iScenario = 1:nScenarios
     title('(b) costs')
     
     if saveFlag
-        fName = "fig"+iScenario+".png";
+        fName = "fig"+iPlot+".png";
         saveas(h, figFolder+fName);
     end
 
 end
+
+
+
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% Plotting - heat maps
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%for iScenario = 1:
+
+

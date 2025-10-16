@@ -17,11 +17,7 @@ relTol = 1e-4;
 par = getPar();
 
 % Define parameters to vary
-% Beta_arr       = [0.3   0.3   0.3   0.6   0.6   0.6];
-% costPerInf_arr = [0.1   0.5   1.2   0.1   0.5   1.2];
-% nScenarios = length(Beta_arr);
-
-Beta_vals = 0.24:0.04:0.6;
+Beta_vals = 0.25:0.05:0.6;
 costPerInf_vals = 0.1:0.1:1.5;
 
 % Get a list of parameter combinations
@@ -92,7 +88,7 @@ for iScenario = 1:nScenarios
         else
             % Otherwise use the most recent solution that had the same
             % value of costPerInf
-            ind = find(costPerInf_list == costPerInf_list(iScenario), 1, 'last');
+            ind = find(costPerInf_list(1:iScenario-1) == costPerInf_list(iScenario), 1, 'last');
             x0 = resultsCent(ind).x;
         end
     end
