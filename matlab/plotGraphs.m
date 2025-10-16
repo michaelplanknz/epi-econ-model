@@ -140,7 +140,7 @@ for iScenario = 1:nScenarios
     grid on
     xlabel('time (days)')
     ylabel('a(t)')
-    legend('unmitigated', 'decentralised response', 'centralised response', 'elimination response', 'Location', 'southeast')
+    legend('unmitigated', 'decentralised', 'centralised', 'elimination', 'Location', 'southeast')
     title('(a) relative contact rate')
     
     nexttile;
