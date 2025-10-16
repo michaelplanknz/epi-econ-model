@@ -169,7 +169,7 @@ for iPlot = 1:nPlots
 
 end
 
-
+% CAN REMOVE THIS ONCE RESULTS ARE RE-RUN SO THAT THESE VARIABLES ARE SAVED
 if ~exist('Beta_mat')
     [Beta_mat, costPerInf_mat] = meshgrid(Beta_vals, costPerInf_vals);
 end
@@ -214,6 +214,7 @@ for iScenario = 1:nScenarios
         tCrit(iRow, jCol) = costCent(iRow, jCol)/Celim;
     end
 
+    % Record code for optimal strategy: 1 = mitigation, 2 = suppression, 3 = elimination
     if costElim(iRow, jCol) < costCent(iRow, jCol)
         stratCode(iRow, jCol) = 3;
     elseif HIT_shortfall(iRow, jCol) > 0.1
@@ -257,7 +258,6 @@ ylabel('cost per infection')
 title('elimination cost ($ bn)')
 nexttile;
 imagesc(Beta_vals/par.Gamma, costPerInf_vals*dollarsPerInf, stratCode);
-%contourf(Beta_vals/par.Gamma, costPerInf_vals*dollarsPerInf, stratCode, [0.5 1.5, 2.5]);
 h = gca; h.YDir = 'normal';
 h.Colormap = parula;
 xlabel('R_0')
