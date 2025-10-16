@@ -1,10 +1,14 @@
 function [results] = getResultsAnalytic(probType, a0, par)
 
+% Iteration settings
 maxTries = 100;
 relTol = 1e-10;
+relFact = 0.5;
 
+% Vector of times
 t = 0:par.dt:par.tMax;
 
+% Solving problem for centralised or decentralised control?
 if probType == "cent"
     coeff = 2;
 elseif probType == "decent"
@@ -13,12 +17,14 @@ else
     error('probType must be "cent" or "decent')
 end
 
+% Set initial condition for a(t)
 a = a0;
 
+% Start iterating
 convFlag = false;
 iTry = 1;
-relFact = 0.5;
 while iTry <= maxTries & ~convFlag
+    % Store existing a(t) for convergence testing
     aSav = a;
 
     % Solve SIR model
@@ -27,7 +33,7 @@ while iTry <= maxTries & ~convFlag
     % Calculate analytical solution
     aNew = (par.costlin + 2*par.costquad)./(2*par.costquad + coeff*par.costPerInf.*  (par.Beta*I)./par.N  .*  S(:, end)./par.N  );
 
-    % Update a
+    % Update a using specified relaxation factor
     a = max(0, min(1, (1-relFact)*a + relFact*aNew ));
 
     % Test for convergence
