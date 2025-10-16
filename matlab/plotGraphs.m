@@ -75,6 +75,7 @@ for iPlot = 1:nPlots
     ylabel('cumulative cost ($bn)')
     xlabel('time (days)')
     title('(b) costs - centralized control')
+    sgtitle("R_0=" + par.Beta/par.Gamma + ", k=$" + par.costPerInf*dollarsPerInf)
     
     
     % Decentralised problem
@@ -159,7 +160,8 @@ for iPlot = 1:nPlots
     xlabel('time (days)')
     ylabel('cumulative cost ($bn)')
     title('(b) costs')
-    
+    sgtitle("R_0=" + par.Beta/par.Gamma + ", k=$" + par.costPerInf*dollarsPerInf)
+
     if saveFlag
         fName = "fig"+iPlot+".png";
         saveas(h, figFolder+fName);
@@ -168,12 +170,107 @@ for iPlot = 1:nPlots
 end
 
 
+if ~exist('Beta_mat')
+    [Beta_mat, costPerInf_mat] = meshgrid(Beta_vals, costPerInf_vals);
+end
 
+% Initialise matrices for heat map results
+costUnmit = zeros(size(Beta_mat));
+costDecent = zeros(size(Beta_mat));
+costCent = zeros(size(Beta_mat));
+costElim = zeros(size(Beta_mat));
+HIT_shortfall = zeros(size(Beta_mat));
+stratCode = nan(size(Beta_mat));
+tCrit = nan(size(Beta_mat));
 
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % Plotting - heat maps
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%for iScenario = 1:
+for iScenario = 1:nScenarios
+
+    %Set scneario-dependent parameters
+    par.Beta = Beta_list(iScenario);
+    par.costPerInf = costPerInf_list(iScenario);
+
+    % Get matrix indices for this iScenario
+    [iRow, jCol] = ind2sub(size(Beta_mat), iScenario);
+
+    % Fill matrix entries
+    costUnmit(iRow, jCol) = results_u(iScenario).costInf(end);
+    costDecent(iRow, jCol) = resultsDecent(iScenario).costInf(end) + resultsDecent(iScenario).costInf(end);
+    costCent(iRow, jCol) = resultsCent(iScenario).costInf(end) + resultsCent(iScenario).costInf(end);
+    HIT_shortfall(iRow, jCol) = resultsCent(iScenario).S(end)/par.N - 1/(par.Beta/par.Gamma);
+
+     % Compute elimination costs
+    Celim = calcElimCost(par);
+    costElim(iRow, jCol) = Celim*max(t);
+
+    % Calculate threshold time for elimination
+    % Note if the centralised response has suppressed the epidemic -
+    % threshold hold time is at least max(t) but exact value is unknown -
+    % would need to run model longer
+    if HIT_shortfall(iRow, jCol) < 0.1
+        tCrit(iRow, jCol) = costCent(iRow, jCol)/Celim;
+    end
+
+    if costElim(iRow, jCol) < costCent(iRow, jCol)
+        stratCode(iRow, jCol) = 3;
+    elseif HIT_shortfall(iRow, jCol) > 0.1
+        stratCode(iRow, jCol) = 2;
+    else
+        stratCode(iRow, jCol) = 1;
+    end
+
+end
+
+cMax = max(max(costDecent))*dollarsPerInf/1e9;
+
+h = figure(100);
+tiledlayout(2, 2, "TileSpacing", "compact");
+nexttile;
+imagesc(Beta_vals/par.Gamma, costPerInf_vals*dollarsPerInf, costDecent*dollarsPerInf/1e9);
+colorbar;
+clim([0 cMax]);
+h = gca; h.YDir = 'normal';
+h.Colormap = hot;
+xlabel('R_0')
+ylabel('cost per infection')
+title('decentralised cost ($ bn)')
+nexttile;
+imagesc(Beta_vals/par.Gamma, costPerInf_vals*dollarsPerInf, costCent*dollarsPerInf/1e9);
+colorbar;
+clim([0 cMax]);
+h = gca; h.YDir = 'normal';
+h.Colormap = hot;
+xlabel('R_0')
+ylabel('cost per infection')
+title('centralised cost ($ bn)')
+nexttile;
+imagesc(Beta_vals/par.Gamma, costPerInf_vals*dollarsPerInf, costElim*dollarsPerInf/1e9);
+colorbar;
+clim([0 cMax]);
+h = gca; h.YDir = 'normal';
+h.Colormap = hot;
+xlabel('R_0')
+ylabel('cost per infection')
+title('elimination cost ($ bn)')
+nexttile;
+imagesc(Beta_vals/par.Gamma, costPerInf_vals*dollarsPerInf, stratCode);
+%contourf(Beta_vals/par.Gamma, costPerInf_vals*dollarsPerInf, stratCode, [0.5 1.5, 2.5]);
+h = gca; h.YDir = 'normal';
+h.Colormap = parula;
+xlabel('R_0')
+ylabel('cost per infection')
+title('optimal strategy')
+
+figure(101);
+imagesc(Beta_vals/par.Gamma, costPerInf_vals*dollarsPerInf, tCrit);
+colorbar;
+h = gca; h.YDir = 'normal';
+h.Colormap = hot;
+xlabel('R_0')
+ylabel('cost per infection')
+title('threshold time (days)')
 
 

@@ -21,9 +21,9 @@ Beta_vals = 0.25:0.05:0.6;
 costPerInf_vals = 0.1:0.1:1.5;
 
 % Get a list of parameter combinations
-[Beta_list, costPerInf_list] = meshgrid(Beta_vals, costPerInf_vals);
-Beta_list = Beta_list(:);
-costPerInf_list = costPerInf_list(:);
+[Beta_mat, costPerInf_mat] = meshgrid(Beta_vals, costPerInf_vals);
+Beta_list = Beta_mat(:);
+costPerInf_list = costPerInf_mat(:);
 nScenarios = length(Beta_list);
 
 % Set options for opimization routine (for heuristic and full problems)
