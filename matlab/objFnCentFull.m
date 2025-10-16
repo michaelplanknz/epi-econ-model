@@ -21,6 +21,7 @@ results.R = par.N-S-I;
 results.a = a;
 results.costInf = costInfPP.*par.N;
 results.costCont = costContPP.*par.N;
+results.x = x;
 
 % Calculate objective function
 f = norm(costInfPP(:, end)+costContPP(:, end), par.normP);
