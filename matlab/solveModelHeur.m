@@ -9,10 +9,12 @@ nSteps = length(t)-1;
 
 [S, I, S_focal] = deal(zeros(par.nGroups, nSteps+1));
 
+% Initial conditions
 S(:, 1) = par.N*(1-par.I0);
 I(:, 1) = par.N*par.I0;
 S_focal(:, 1) = par.N*(1-par.I0);
 
+% Loop through time steps
 for iStep = 1:nSteps
     % Evaluate the heuristic contact function with the specified
     % parameters (x) and the current values of S(t) and I(t)

@@ -1,5 +1,7 @@
 function [f, results] = objFnCentFull(x, par)
 
+% Evaluate centralised objective function using the full time-dependent contact rate function
+
 t = 0:par.dt:par.tMax;
 tMesh = 0:par.meshSpace:par.tMax;
 

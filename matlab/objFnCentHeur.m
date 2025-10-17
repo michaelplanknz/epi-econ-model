@@ -1,5 +1,7 @@
 function [f, results] = objFnCentHeur(x, par)
 
+% Evaluate centralised objective function using the heuristic contact rate function
+
 % Solve SIR model with the specified parameters (x) for the heuristic
 % contact functio n
 [S, I, ~] = solveModelHeur(x, x, par);
