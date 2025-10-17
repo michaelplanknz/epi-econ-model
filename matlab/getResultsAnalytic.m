@@ -60,30 +60,3 @@ results.a = a;
 results.costInf = costInfPP .* par.N;
 results.costCont = costContPP .* par.N;
 
-
-% 
-% dC1da_an = par.costPerInf*par.Beta * a.* I/par.N .* S(end)/par.N*par.dt;
-% dC2da_an = (- par.costlin - 2*par.costquad*(1-a))  *par.dt;
-% 
-% C1 = costInfPP(end);
-% C2 = costContPP(end);
-% da = -0.0001;
-% 
-% 
-% 
-% for ia = 1:length(a)
-%     aPert = a;
-%     aPert(ia) = aPert(ia)+da;
-%     [Sp, Ip, Sp_focal] = solveModelFull(aPert, a, par);
-%     CPert1 = par.costPerInf*(1-Sp_focal(end)/par.N);
-%     CPert2 = par.dt*sum(par.costlin.*(1-aPert) + par.costquad*(1-aPert).^2, 2);
-%     dCd1a_num(ia) = (CPert1-C1)/da;
-%     dCd2a_num(ia) = (CPert2-C2)/da;
-% end
-% 
-% 
-% figure;
-% plot(t, dC1da_an, t, dCd1a_num)
-% 
-% figure;
-% plot(t, dC2da_an, t, dCd2a_num)

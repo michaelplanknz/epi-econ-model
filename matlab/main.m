@@ -73,13 +73,6 @@ for iScenario = 1:nScenarios
         
         % Use heuristic solution to set initial condition for full optimization
         x0 = interp1(t', resultsCentHeur(iScenario).a', tMesh)';
-        
-        % Initialise at uncontrolled state
-    %      a0 = ones(par.nGroups, length(t));
-    %      % Get analytical approximation to optimal centralised control
-    %     results_tmp = getResultsAnalytic("cent", a0, par);
-    %      % Use this to set initial condition for full optimization routine
-    %      x0 = interp1(t, results_tmp.a, tMesh);
     else
         % On subsequent iterations use a previous solution to initialise
         if Beta_list(iScenario) == Beta_list(iScenario-1)
