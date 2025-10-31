@@ -52,6 +52,11 @@ par.b = 3000;
 % outbreaks
 par.controlFrac = 0.4;
 
-% Multiplicative effect of TTI measures on R0
-par.alpha_TTI = 0.8;
+% Multiplicative effect of TTI measures on R0 (alpha=1 is no effect)
+par.alpha_TTI = 1;
 
+% Max. prevalence (%) at which TTI works 
+par.TTI_max = 1000;
+
+% Breadth of logistic transition of TTI from on to off
+par.TTI_breadth = 50;
