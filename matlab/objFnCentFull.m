@@ -16,7 +16,7 @@ HIT = 1 - par.Gamma/par.Beta;
 
 % Calculate infection and control costs per person
 costInfPP = par.costPerInf.*(1-S./par.N);
-costInfPP(:, end) = par.costPerInf.*max(HIT, 1-S(:, end)./par.N);
+%costInfPP(:, end) = par.costPerInf.*max(HIT, 1-S(:, end)./par.N);
 costContPP = par.dt * cumsum(par.costlin.*(1-a) + par.costquad.*(1-a).^2, 2);
 
 % Store results in structure for output

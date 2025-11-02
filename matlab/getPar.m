@@ -1,7 +1,7 @@
 function par = getPar()
 
 % Number of days to simulate
-par.tMax = 600;
+par.tMax = 800;
 
 par.dt = 0.1;
 
