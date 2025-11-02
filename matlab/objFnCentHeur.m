@@ -10,7 +10,7 @@ function [f, results] = objFnCentHeur(x, par)
 % S(t) and I(t)
 a = myContModel(x, S, I, par);
 
-HIT = 1 - par.Gamma/par.Beta;
+%HIT = 1 - par.Gamma/par.Beta;
 
 % Calculate infection and control costs per person
 costInfPP = par.costPerInf.*(1-S./par.N);

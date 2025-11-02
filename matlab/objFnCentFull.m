@@ -12,7 +12,7 @@ a = max(0, min(1, pchip(tMesh, x, t)));
 % Solve SIR model
 [S, I, ~] = solveModelFull(a, a, par);
 
-HIT = 1 - par.Gamma/par.Beta;
+%HIT = 1 - par.Gamma/par.Beta;
 
 % Calculate infection and control costs per person
 costInfPP = par.costPerInf.*(1-S./par.N);

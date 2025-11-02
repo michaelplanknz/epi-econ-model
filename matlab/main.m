@@ -17,7 +17,7 @@ relTol = 1e-4;
 par = getPar();
 
 % Define parameters to vary
-Beta_vals = 0.25:0.05:0.6;
+Beta_vals = 0.25:0.05:0.7;
 costPerInf_vals = 0.1:0.1:1.5;
 
 % Get a list of parameter combinations
@@ -28,7 +28,7 @@ nScenarios = length(Beta_list);
 
 % Set options for opimization routine (for heuristic and full problems)
 opts1 = optimoptions('fmincon', 'Display', 'notify');
-opts2 = optimoptions('fmincon', 'Display', 'notify', 'MaxFunctionEvaluations', 15000, 'MaxIterations', 5000);
+opts2 = optimoptions('fmincon', 'Display', 'notify', 'MaxFunctionEvaluations', 20000, 'MaxIterations', 5000);
 
 % Loop through parameter combinations
 for iScenario = 1:nScenarios
