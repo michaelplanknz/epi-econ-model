@@ -41,6 +41,7 @@ par.costPerInf = 0.1;
 
 % Outbreak size at first detection
 par.xOutbreak = 20;
+par.tDet = 14;
 
 % Outbreak frequency (days-1)
 par.r = 1/150;
@@ -53,7 +54,7 @@ par.b = 3000;
 par.controlFrac = 0.4;
 
 % Multiplicative effect of TTI measures on R0 (alpha=1 is no effect)
-par.alpha_TTI = 1;
+par.alpha_TTI = 0.8;
 
 % Max. prevalence (%) at which TTI works 
 par.TTI_max = 1000;

@@ -35,84 +35,84 @@ for iPlot = 1:nPlots
     par.costPerInf = costPerInf_arr(iPlot);
 
     % Compute elimination costs
-    [Celim, aElimOut] = calcElimCost(par);
+    [CElim, aElimOut, CSup, aSup] = calcElimCost(par);
 
-    h = figure(2*iPlot-1);
-    h.Position = [     240         125        1024         760];
-    tiledlayout(2, 2, "TileSpacing", "compact");
-    
-    % Centralised problem
-    nexttile;
-    plot(t, resultsCent(iScenario).R/sum(par.N))
-    hold on
-    set(gca, 'ColorOrderIndex', 1);
-    plot(t, results_u(iScenario).R/sum(par.N), '--')
-    plot(t, resultsCent(iScenario).a, 'LineWidth', 2)
-    if par.nGroups > 1
-        lbls = ["R_"+groupLbls; "R_"+groupLbls+"_u"; "a_"+groupLbls ];
-    else
-        lbls = ["R(t)", "R(t) (unmitigated)", "a(t)"];
-    end
-    legend(lbls, 'Location', 'southeast')
-    grid on
-    xlabel('time (days)')
-    title('(a) epidemic dynamics - centralized control')
-    
-    nexttile;
-    plot(t, (resultsCent(iScenario).costInf + resultsCent(iScenario).costCont)*dollarsPerInf/1e9)
-    hold on
-    plot(t, resultsCent(iScenario).costInf*dollarsPerInf/1e9)
-    plot(t, resultsCent(iScenario).costCont*dollarsPerInf/1e9)
-    set(gca, 'ColorOrderIndex', 1);
-    plot(t, (results_u(iScenario).costInf + results_u(iScenario).costCont)*dollarsPerInf/1e9, '--')
-    if par.nGroups > 1
-        lbls = ["cost_"+groupIDs; "cost_"+groupIDs+"_u"];
-    else
-        lbls = ["total cost", "infection cost", "control cost", "total cost (unmitigated)"];
-    end
-    legend(lbls, 'Location', 'southeast')
-    grid on
-    ylabel('cumulative cost ($bn)')
-    xlabel('time (days)')
-    title('(b) costs - centralized control')
-    sgtitle("R_0=" + par.Beta/par.Gamma + ", k=$" + par.costPerInf*dollarsPerInf)
-    
-    
-    % Decentralised problem
-    nexttile;
-    plot(t, resultsDecent(iScenario).R/sum(par.N))
-    hold on
-    set(gca, 'ColorOrderIndex', 1);
-    plot(t, results_u(iScenario).R/sum(par.N), '--')
-    plot(t, resultsDecent(iScenario).a, 'LineWidth', 2)
-    grid on
-    if par.nGroups > 1
-        lbls = ["R_"+groupLbls; "R_"+groupLbls+"_u"; "a_"+groupLbls ];
-    else
-        lbls = ["R(t)", "R(t) (unmitigated)", "a(t)"];
-    end
-    legend(lbls, 'Location', 'southeast')
-    xlabel('time (days)')
-    title('(c) epidemic dynamics - decentralized control')
-    
-    
-    nexttile;
-    plot(t, (resultsDecent(iScenario).costInf + resultsDecent(iScenario).costCont)*dollarsPerInf/1e9)
-    hold on
-    plot(t, resultsDecent(iScenario).costInf*dollarsPerInf/1e9)
-    plot(t, resultsDecent(iScenario).costCont*dollarsPerInf/1e9)
-    set(gca, 'ColorOrderIndex', 1);
-    plot(t, (results_u(iScenario).costInf + results_u(iScenario).costCont)*dollarsPerInf/1e9, '--')
-    grid on
-    if par.nGroups > 1
-        lbls = ["cost_"+groupIDs; "cost_"+groupIDs+"_u"];
-    else
-        lbls = ["total cost", "infection cost", "control cost", "total cost (unmitigated)"];
-    end
-    legend(lbls, 'Location', 'southeast')
-    ylabel('cumulative cost ($bn)')
-    xlabel('time (days)')
-    title('(d) costs - decentralized control')
+    % h = figure(2*iPlot-1);
+    % h.Position = [     240         125        1024         760];
+    % tiledlayout(2, 2, "TileSpacing", "compact");
+    % 
+    % % Centralised problem
+    % nexttile;
+    % plot(t, resultsCent(iScenario).R/sum(par.N))
+    % hold on
+    % set(gca, 'ColorOrderIndex', 1);
+    % plot(t, results_u(iScenario).R/sum(par.N), '--')
+    % plot(t, resultsCent(iScenario).a, 'LineWidth', 2)
+    % if par.nGroups > 1
+    %     lbls = ["R_"+groupLbls; "R_"+groupLbls+"_u"; "a_"+groupLbls ];
+    % else
+    %     lbls = ["R(t)", "R(t) (unmitigated)", "a(t)"];
+    % end
+    % legend(lbls, 'Location', 'southeast')
+    % grid on
+    % xlabel('time (days)')
+    % title('(a) epidemic dynamics - centralized control')
+    % 
+    % nexttile;
+    % plot(t, (resultsCent(iScenario).costInf + resultsCent(iScenario).costCont)*dollarsPerInf/1e9)
+    % hold on
+    % plot(t, resultsCent(iScenario).costInf*dollarsPerInf/1e9)
+    % plot(t, resultsCent(iScenario).costCont*dollarsPerInf/1e9)
+    % set(gca, 'ColorOrderIndex', 1);
+    % plot(t, (results_u(iScenario).costInf + results_u(iScenario).costCont)*dollarsPerInf/1e9, '--')
+    % if par.nGroups > 1
+    %     lbls = ["cost_"+groupIDs; "cost_"+groupIDs+"_u"];
+    % else
+    %     lbls = ["total cost", "infection cost", "control cost", "total cost (unmitigated)"];
+    % end
+    % legend(lbls, 'Location', 'southeast')
+    % grid on
+    % ylabel('cumulative cost ($bn)')
+    % xlabel('time (days)')
+    % title('(b) costs - centralized control')
+    % sgtitle("R_0=" + par.Beta/par.Gamma + ", k=$" + par.costPerInf*dollarsPerInf)
+    % 
+    % 
+    % % Decentralised problem
+    % nexttile;
+    % plot(t, resultsDecent(iScenario).R/sum(par.N))
+    % hold on
+    % set(gca, 'ColorOrderIndex', 1);
+    % plot(t, results_u(iScenario).R/sum(par.N), '--')
+    % plot(t, resultsDecent(iScenario).a, 'LineWidth', 2)
+    % grid on
+    % if par.nGroups > 1
+    %     lbls = ["R_"+groupLbls; "R_"+groupLbls+"_u"; "a_"+groupLbls ];
+    % else
+    %     lbls = ["R(t)", "R(t) (unmitigated)", "a(t)"];
+    % end
+    % legend(lbls, 'Location', 'southeast')
+    % xlabel('time (days)')
+    % title('(c) epidemic dynamics - decentralized control')
+    % 
+    % 
+    % nexttile;
+    % plot(t, (resultsDecent(iScenario).costInf + resultsDecent(iScenario).costCont)*dollarsPerInf/1e9)
+    % hold on
+    % plot(t, resultsDecent(iScenario).costInf*dollarsPerInf/1e9)
+    % plot(t, resultsDecent(iScenario).costCont*dollarsPerInf/1e9)
+    % set(gca, 'ColorOrderIndex', 1);
+    % plot(t, (results_u(iScenario).costInf + results_u(iScenario).costCont)*dollarsPerInf/1e9, '--')
+    % grid on
+    % if par.nGroups > 1
+    %     lbls = ["cost_"+groupIDs; "cost_"+groupIDs+"_u"];
+    % else
+    %     lbls = ["total cost", "infection cost", "control cost", "total cost (unmitigated)"];
+    % end
+    % legend(lbls, 'Location', 'southeast')
+    % ylabel('cumulative cost ($bn)')
+    % xlabel('time (days)')
+    % title('(d) costs - decentralized control')
     
     
     
@@ -142,12 +142,13 @@ for iPlot = 1:nPlots
     hold on
     plot(t, resultsDecent(iScenario).a)
     plot(t, resultsCent(iScenario).a)
+    plot(t, aSup*ones(size(t)))
     plot(t, aElim)
     ylim([0, 1])
     grid on
     xlabel('time (days)')
     ylabel('a(t)')
-    legend('unmitigated', 'decentralised', 'centralised', 'elimination', 'Location', 'southeast')
+    legend('unmitigated', 'decentralised', 'centralised', 'suppression', 'elimination', 'Location', 'southeast')
     title('(a) relative contact rate')
     
     nexttile;
@@ -155,7 +156,8 @@ for iPlot = 1:nPlots
     hold on
     plot(t, (resultsDecent(iScenario).costInf + resultsDecent(iScenario).costCont)*dollarsPerInf/1e9)
     plot(t, (resultsCent(iScenario).costInf + resultsCent(iScenario).costCont)*dollarsPerInf/1e9)
-    plot(t, Celim*t*dollarsPerInf/1e9 )
+    plot(t, CSup*t*dollarsPerInf/1e9 )
+    plot(t, CElim*t*dollarsPerInf/1e9 )
     grid on
     xlabel('time (days)')
     ylabel('cumulative cost ($bn)')
@@ -170,9 +172,9 @@ for iPlot = 1:nPlots
 end
 
 % CAN REMOVE THIS ONCE RESULTS ARE RE-RUN SO THAT THESE VARIABLES ARE SAVED
-if ~exist('Beta_mat')
-    [Beta_mat, costPerInf_mat] = meshgrid(Beta_vals, costPerInf_vals);
-end
+% if ~exist('Beta_mat')
+%     [Beta_mat, costPerInf_mat] = meshgrid(Beta_vals, costPerInf_vals);
+% end
 
 % Initialise matrices for heat map results
 costUnmit = zeros(size(Beta_mat));
@@ -198,20 +200,20 @@ for iScenario = 1:nScenarios
 
     % Fill matrix entries
     costUnmit(iRow, jCol) = results_u(iScenario).costInf(end);
-    costDecent(iRow, jCol) = resultsDecent(iScenario).costInf(end) + resultsDecent(iScenario).costInf(end);
-    costCent(iRow, jCol) = resultsCent(iScenario).costInf(end) + resultsCent(iScenario).costInf(end);
+    costDecent(iRow, jCol) = resultsDecent(iScenario).costInf(end) + resultsDecent(iScenario).costCont(end);
+    costCent(iRow, jCol) = resultsCent(iScenario).costInf(end) + resultsCent(iScenario).costCont(end);
     HIT_shortfall(iRow, jCol) = resultsCent(iScenario).S(end)/par.N - 1/(par.Beta/par.Gamma);
 
      % Compute elimination costs
-    Celim = calcElimCost(par);
-    costElim(iRow, jCol) = Celim*max(t);
+    [CElim, ~, cSup] = calcElimCost(par);
+    costElim(iRow, jCol) = CElim*max(t);
 
     % Calculate threshold time for elimination
     % Note if the centralised response has suppressed the epidemic -
     % threshold hold time is at least max(t) but exact value is unknown -
     % would need to run model longer
     if HIT_shortfall(iRow, jCol) < 0.1
-        tCrit(iRow, jCol) = costCent(iRow, jCol)/Celim;
+        tCrit(iRow, jCol) = costCent(iRow, jCol)/CElim;
     end
 
     % Record code for optimal strategy: 1 = mitigation, 2 = suppression, 3 = elimination

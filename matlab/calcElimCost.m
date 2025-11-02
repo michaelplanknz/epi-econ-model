@@ -1,4 +1,4 @@
-function [Celim, aOptElim] = calcElimCost(par)
+function [CElim, aOptElim, CSup, aSup] = calcElimCost(par)
 
 % Function to calculatet the elimination cost per unit time according to
 % the model
@@ -16,4 +16,10 @@ opts = optimset('display', 'off');
 aOptElim = fmincon(myF, 0, [], [], [], [], 0, sqrt(1/(par.alpha_TTI*R0)), [], opts );
 
 % Calculate elimination cost per unit time
-Celim = par.b + par.r*log(par.xOutbreak)*(costlin_avg*(1-aOptElim) + costquad_avg*(1-aOptElim)^2)/(par.Gamma - R0*par.Gamma*par.alpha_TTI*aOptElim^2);
+CElim = par.b + par.r*log(par.xOutbreak)*(costlin_avg*(1-aOptElim) + costquad_avg*(1-aOptElim)^2)/(par.Gamma - R0*par.Gamma*par.alpha_TTI*aOptElim^2);
+
+
+% Calculate suppression cost per unit time
+aSup = sqrt(1/(par.alpha_TTI*R0));
+CSup = sum(par.costlin.*par.N)*(1-aSup) + sum(par.costquad.*par.N)*(1-aSup)^2;
+
