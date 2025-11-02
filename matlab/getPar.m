@@ -9,7 +9,6 @@ par.dt = 0.1;
 par.meshSpace = 10;
 
 
-
 % Recovery rate (days-1)
 par.Gamma = 0.2;
 
