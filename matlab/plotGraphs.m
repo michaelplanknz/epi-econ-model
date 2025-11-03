@@ -40,7 +40,7 @@ tHoriz = 600;
 letters = [ "(a)", "(b)", "(c)", "(d)", "(e)", "(f)"   ];
 
 for iPlot = 1:nPlots
-    h = figure(2*iPlot);
+    h = figure(iPlot);
     h.Position = [139          69        1024         912];
     tiledlayout(nSubplots, 2, "TileSpacing", "compact")
      
@@ -170,7 +170,8 @@ ind1 = find(costElim(1, :) > costSup(1, :), 1, 'last');
 ind2 = find(costElim(1, :) <= costSup(1, :), 1, 'first');
 R0crit = mean(Beta_vals([ind1 ind2]))/par.Gamma;
 
-h = figure(100);
+iPlot = iPlot + 1;
+h = figure(iPlot);
 h.Position = [   141   407   770   561];
 tiledlayout(2, 2, "TileSpacing", "compact");
 nexttile;
@@ -206,13 +207,21 @@ imagesc(Beta_vals/par.Gamma, costPerInf_vals*dollarsPerInf, stratCode);
 h = gca; h.YDir = 'normal';
 h.Colormap = parula;
 xlabel('R_0')
-text(1.25, 12000, 'suppression')
-text(2.4, 12000, 'elimination')
-text(2.2, 5000, 'mitigation', 'Color', 'w')
+text(1.25, 14000, 'suppression')
+text(2.5, 14000, 'elimination')
+text(2.3, 5000, 'mitigation', 'Color', 'w')
 ylabel('cost per infection')
 title('(d) optimal strategy')
 
-figure(101);
+if saveFlag
+    fName = "fig" + iPlot + ".png";
+    saveas(h, figFolder + fName);
+end
+
+
+
+iPlot = iPlot + 1;
+h = figure(iPlot);
 imagesc(Beta_vals/par.Gamma, costPerInf_vals*dollarsPerInf, tCrit);
 colorbar;
 h = gca; h.YDir = 'normal';
@@ -223,4 +232,7 @@ xlabel('R_0')
 ylabel('cost per infection')
 title('threshold time (days)')
 
-
+if saveFlag
+    fName = "fig" + iPlot + ".png";
+    saveas(h, figFolder + fName);
+end
