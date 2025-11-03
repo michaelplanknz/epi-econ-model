@@ -50,37 +50,36 @@ for iPlot = 1:nPlots
     
         %Set scneario-dependent parameters
         par.Beta = Beta_arr(iPlot);
-        par.costPerInf = costPerInf_arr(iPlot);
+        par.costPerInf = costPerInf_arr(iSubplot);
     
         % Compute elimination costs
         [CElim, aElimOut, CSup, aSup] = calcElimCost(par);
-
     
         
         % For the purposes of plotting, simulate the elimination response to sporadic
         % outbreaks
         aElim = ones(size(t));
-        
-        % Assume outbreaks are evenly spaced with the first one at 0.5 * expected
-        % spacing
-        tOut1 = 0.5/par.r;
-        
+
         % Mean outbreak duration
         tDur = log(par.xOutbreak)/(par.Gamma-par.Beta*par.alpha_TTI*aElimOut^2);
         
-        tRel = mod(t-tOut1, 1/par.r);
-        aElim(tRel >= 0 & tRel < tDur) = aElimOut;
+        % Assume outbreaks are evenly spaced at the expected spacing,
+        % create a repeating time variable with this frequency
+        tRel = mod(t, 1/par.r);
+        
+        % Set aElim to be the elimination level during outbreaks
+        aElim(tRel >= 1/par.r-tDur) = aElimOut;
         
    
         
         
         nexttile;
-        plot(t, results_u(iScenario).a.^2)
+        plot(t, results_u(iScenario).a.^2, 'LineWidth', 2)
         hold on
-        plot(t, resultsDecent(iScenario).a.^2)
-        plot(t, resultsCent(iScenario).a.^2)
-        plot(t, aSup^2*ones(size(t)))
-        plot(t, aElim.^2)
+        plot(t, resultsDecent(iScenario).a.^2, 'LineWidth', 2)
+        plot(t, resultsCent(iScenario).a.^2, 'LineWidth', 2)
+        plot(t, aSup^2*ones(size(t)), 'LineWidth', 2)
+        plot(t, aElim.^2, 'LineWidth', 2)
         set(gca, 'ColorOrderIndex', 1);
         plot(t, results_u(iScenario).R/sum(par.N), '--')
         plot(t, resultsDecent(iScenario).R/sum(par.N), '--')
@@ -89,8 +88,8 @@ for iPlot = 1:nPlots
         xlim([0 tHoriz])
         grid on
         xlabel('time (days)')
-        ylabel('attack rate  ;  R_{EI}(t)')
-        title(letters(2*iPlot-1))
+        ylabel('[attack rate  ,  R_{EI}(t)]')
+        title(letters(2*iSubplot-1) + " cost per infection = $" + dollarsPerInf*par.costPerInf)
  
         % Cost comparison
         nexttile;
@@ -105,7 +104,7 @@ for iPlot = 1:nPlots
         grid on
         xlabel('time (days)')
         ylabel('cumulative cost ($bn)')
-        title(letters(2*iPlot))
+        title(letters(2*iSubplot) + " cost per infection = $" + dollarsPerInf*par.costPerInf)
     end
     sgtitle("R_0=" + par.Beta/par.Gamma)
     l = legend('unmitigated', 'decentralised', 'mitigation', 'suppression', 'elimination', 'Location', 'southoutside');
@@ -127,7 +126,6 @@ costDecent = zeros(size(Beta_mat));
 costMit = zeros(size(Beta_mat));
 costSup = zeros(size(Beta_mat));
 costElim = zeros(size(Beta_mat));
-%HIT_shortfall = zeros(size(Beta_mat));
 stratCode = nan(size(Beta_mat));
 tCrit = nan(size(Beta_mat));
 
@@ -160,17 +158,17 @@ for iScenario = 1:nScenarios
 
 
     % Calculate threshold time for elimination
-    % Note if the centralised response has suppressed the epidemic -
-    % threshold hold time is at least max(t) but exact value is unknown -
-    % would need to run model longer
-%    if HIT_shortfall(iRow, jCol) < 0.1
-        tCrit(iRow, jCol) = costMit(iRow, jCol)/min(CElim, CSup);
-%    end
-
+    tCrit(iRow, jCol) = costMit(iRow, jCol)/min(CElim, CSup);
 
 end
 
 cMax = max(max(costDecent))*dollarsPerInf/1e9;
+
+% Record the threshold value of R0 above hwich elimination is better than
+% suppression
+ind1 = find(costElim(1, :) > costSup(1, :), 1, 'last');
+ind2 = find(costElim(1, :) <= costSup(1, :), 1, 'first');
+R0crit = mean(Beta_vals([ind1 ind2]))/par.Gamma;
 
 h = figure(100);
 h.Position = [   141   407   770   561];
@@ -183,7 +181,7 @@ h = gca; h.YDir = 'normal';
 h.Colormap = hot;
 xlabel('R_0')
 ylabel('cost per infection')
-title('decentralised cost ($ bn)')
+title('(a) decentralised cost ($ bn)')
 nexttile;
 imagesc(Beta_vals/par.Gamma, costPerInf_vals*dollarsPerInf, costMit*dollarsPerInf/1e9);
 colorbar;
@@ -192,32 +190,35 @@ h = gca; h.YDir = 'normal';
 h.Colormap = hot;
 xlabel('R_0')
 ylabel('cost per infection')
-title('migitgation cost ($ bn)')
+title('(b) migitgation cost ($ bn)')
 nexttile;
 imagesc(Beta_vals/par.Gamma, costPerInf_vals*dollarsPerInf, min(costElim, costSup)*dollarsPerInf/1e9);
 colorbar;
 clim([0 cMax]);
 h = gca; h.YDir = 'normal';
 h.Colormap = hot;
+xline(R0crit, 'w--')
 xlabel('R_0')
 ylabel('cost per infection')
-title('elimination/suppression cost ($ bn)')
+title('(c) elimination/suppression cost ($ bn)')
 nexttile;
 imagesc(Beta_vals/par.Gamma, costPerInf_vals*dollarsPerInf, stratCode);
 h = gca; h.YDir = 'normal';
 h.Colormap = parula;
 xlabel('R_0')
 text(1.25, 12000, 'suppression')
-text(2.3, 12000, 'elimination')
+text(2.4, 12000, 'elimination')
 text(2.2, 5000, 'mitigation', 'Color', 'w')
 ylabel('cost per infection')
-title('optimal strategy')
+title('(d) optimal strategy')
 
 figure(101);
 imagesc(Beta_vals/par.Gamma, costPerInf_vals*dollarsPerInf, tCrit);
 colorbar;
 h = gca; h.YDir = 'normal';
 h.Colormap = hot;
+clim([0 2000])
+xlim([1.375, inf])
 xlabel('R_0')
 ylabel('cost per infection')
 title('threshold time (days)')
