@@ -53,7 +53,7 @@ for iPlot = 1:nPlots
         par.costPerInf = costPerInf_arr(iSubplot);
     
         % Compute elimination costs
-        [CElim, aElimOut, CSup, aSup] = calcElimCost(par);
+        [CElim, aOptElim, CSup, aSup] = calcElimCost(par);
     
         
         % For the purposes of plotting, simulate the elimination response to sporadic
@@ -61,14 +61,15 @@ for iPlot = 1:nPlots
         aElim = ones(size(t));
 
         % Mean outbreak duration
-        tDur = log(par.xOutbreak)/(par.Gamma-par.Beta*par.alpha_TTI*aElimOut^2);
+        R0 = eigs(par.Beta, [], 1)/par.Gamma;
+        tDur = par.tDet*(R0-1)/(1 - R0*par.alpha_TTI*aOptElim^2);
         
         % Assume outbreaks are evenly spaced at the expected spacing,
         % create a repeating time variable with this frequency
         tRel = mod(t, 1/par.r);
         
         % Set aElim to be the elimination level during outbreaks
-        aElim(tRel >= 1/par.r-tDur) = aElimOut;
+        aElim(tRel >= 1/par.r-tDur) = aOptElim;
         
    
         
@@ -88,7 +89,7 @@ for iPlot = 1:nPlots
         xlim([0 tHoriz])
         grid on
         xlabel('time (days)')
-        ylabel('[attack rate  ,  R_{EI}(t)]')
+        ylabel('[attack rate  ,  a(t)^2]')
         title(letters(2*iSubplot-1) + " cost per infection = $" + dollarsPerInf*par.costPerInf)
  
         % Cost comparison
