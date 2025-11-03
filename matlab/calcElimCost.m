@@ -22,7 +22,8 @@ opts = optimset('display', 'off');
 aOptElim = fmincon(myF, 0, [], [], [], [], 0, aSup, [], opts );
 
 % Calculate elimination cost per unit time
-CElim = par.b + par.r*log(par.xOutbreak)*(costlin_avg*(1-aOptElim) + costquad_avg*(1-aOptElim)^2)/(par.Gamma - R0*par.Gamma*par.alpha_TTI*aOptElim^2);
+%CElim = par.b + par.r*log(par.xOutbreak)*(costlin_avg*(1-aOptElim) + costquad_avg*(1-aOptElim)^2)/(par.Gamma - R0*par.Gamma*par.alpha_TTI*aOptElim^2);
+CElim = par.b + par.r*par.tDet*(R0-1)*(costlin_avg*(1-aOptElim) + costquad_avg*(1-aOptElim)^2)/(1 - R0*par.alpha_TTI*aOptElim^2);
 
 
 
