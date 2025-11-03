@@ -223,14 +223,17 @@ end
 iPlot = iPlot + 1;
 h = figure(iPlot);
 imagesc(Beta_vals/par.Gamma, costPerInf_vals*dollarsPerInf, tCrit);
-colorbar;
+cb = colorbar;
 h = gca; h.YDir = 'normal';
 h.Colormap = hot;
 clim([0 2000])
 xlim([1.375, inf])
+cb.Label.String = 'threshold time (days)';
+cb.Label.Rotation = 270;
+cb.Label.Position(1) = 3.5;
+%ylabel(cb, 'threshold time (days)', 'Rotation', 270)
 xlabel('R_0')
 ylabel('cost per infection')
-title('threshold time (days)')
 
 if saveFlag
     fName = "fig" + iPlot + ".png";
