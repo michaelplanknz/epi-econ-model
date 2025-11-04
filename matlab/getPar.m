@@ -39,7 +39,7 @@ par.costPerInf = 0.1;
 % Elimination model parameters 
 
 % Outbreak size at first detection
-par.xOutbreak = 20;
+%par.xOutbreak = 20;
 par.tDet = 14;
 
 % Outbreak frequency (days-1)

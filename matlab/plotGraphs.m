@@ -8,29 +8,9 @@ figFolder = '../figures/';
 % Set to true to save Figures as .png files
 saveFlag = false;
 
-
 % Load previously saved model results
-fIn = outFolder + "results.mat";
+fIn = outFolder + "results_for_plots.mat";
 load(fIn);
-
-% Select values of Beta and costPerInf to plot
-Beta_arr       = [0.3, 0.6];
-costPerInf_arr = [0.1   0.5   1.2];
-nPlots = length(Beta_arr);
-nSubplots = length(costPerInf_arr);
-
-% Upper limit for y axis for cost plots for each beta
-cUpper = [40 80];
-
-% Main results use cost per infection measured in $10,000s
-% This scaling factor converts all costs to $
-dollarsPerInf = 10000;
-
-
-% Time horizon to use for coast comparisons and plots (need to be <= par.tMax
-tHoriz = 600;
-
-
 
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -121,47 +101,16 @@ end
 
 
 
-% Initialise matrices for heat map results
-costUnmit = zeros(size(Beta_mat));
-costDecent = zeros(size(Beta_mat));
-costMit = zeros(size(Beta_mat));
-costSup = zeros(size(Beta_mat));
-costElim = zeros(size(Beta_mat));
-stratCode = nan(size(Beta_mat));
-tCrit = nan(size(Beta_mat));
+
+
+
+
+
 
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % Plotting - heat maps
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-for iScenario = 1:nScenarios
-
-    %Set scneario-dependent parameters
-    par.Beta = Beta_list(iScenario);
-    par.costPerInf = costPerInf_list(iScenario);
-
-    % Get matrix indices for this iScenario
-    [iRow, jCol] = ind2sub(size(Beta_mat), iScenario);
-
-    % Fill matrix entries
-    costUnmit(iRow, jCol) = results_u(iScenario).costInf(end);
-    costDecent(iRow, jCol) = resultsDecent(iScenario).costInf(end) + resultsDecent(iScenario).costCont(end);
-    costMit(iRow, jCol) = resultsCent(iScenario).costInf(end) + resultsCent(iScenario).costCont(end);
-    %HIT_shortfall(iRow, jCol) = resultsCent(iScenario).S(end)/par.N - 1/(par.Beta/par.Gamma);
-
-     % Compute elimination costs
-    [CElim, ~, CSup] = calcElimCost(par);
-    costElim(iRow, jCol) = CElim*tHoriz;
-    costSup(iRow, jCol) = CSup*tHoriz;
-
-    % Record code for optimal strategy: 1 = mitigation, 2 = suppression, 3 = elimination
-    [~, stratCode(iRow, jCol)] = min([costMit(iRow, jCol), costSup(iRow, jCol), costElim(iRow, jCol)]);
-
-
-    % Calculate threshold time for elimination
-    tCrit(iRow, jCol) = costMit(iRow, jCol)/min(CElim, CSup);
-
-end
 
 cMax = max(max(costDecent))*dollarsPerInf/1e9;
 
@@ -223,6 +172,10 @@ end
 
 iPlot = iPlot + 1;
 h = figure(iPlot);
+h.Position = [   139   463   994   385];
+tiledlayout(1, 2, "TileSpacing", "compact");
+
+nexttile;
 imagesc(Beta_vals/par.Gamma, costPerInf_vals*dollarsPerInf, tCrit);
 cb = colorbar;
 h = gca; h.YDir = 'normal';
@@ -231,10 +184,23 @@ clim([0 2000])
 xlim([1.375, inf])
 cb.Label.String = 'threshold time (days)';
 cb.Label.Rotation = 270;
-cb.Label.Position(1) = 3.5;
-%ylabel(cb, 'threshold time (days)', 'Rotation', 270)
+cb.Label.Position(1) = 4;
 xlabel('R_0')
 ylabel('cost per infection')
+title('(a)')
+
+nexttile;
+imagesc(tDetRet_vals, alpha_TTI_vals, tCrit2);
+cb = colorbar;
+h = gca; h.YDir = 'normal';
+h.Colormap = hot;
+cb.Label.String = 'threshold time (days)';
+cb.Label.Rotation = 270;
+cb.Label.Position(1) = 3.8;
+xlabel('border outbreak detect-return time ratio')
+ylabel('\alpha_{TTI}')
+title('(b)')
+
 
 if saveFlag
     fName = "fig" + iPlot + ".png";
