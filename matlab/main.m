@@ -73,16 +73,21 @@ for iScenario = 1:nScenarios
         
         % Use heuristic solution to set initial condition for full optimization
         x0 = interp1(t', resultsCentHeur(iScenario).a', tMesh)';
+
+        % Initialise decentralised problem at uncontrolled state
+        a0 = ones(par.nGroups, length(t));
     else
         % On subsequent iterations use a previous solution to initialise
         if Beta_list(iScenario) == Beta_list(iScenario-1)
             % Use the most recdent solution if it had the same value of Beta
             x0 = resultsCent(iScenario-1).x;
+            a0 = resultsDecent(iScenario-1).a;
         else
             % Otherwise use the most recent solution that had the same
             % value of costPerInf
             ind = find(costPerInf_list(1:iScenario-1) == costPerInf_list(iScenario), 1, 'last');
             x0 = resultsCent(ind).x;
+            a0 = resultsDecent(ind).a;
         end
     end
 
@@ -97,9 +102,7 @@ for iScenario = 1:nScenarios
     %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
     % Solve decentralised problem with analytic method
     %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-    
-    % Initialise at uncontrolled state
-    a0 = ones(par.nGroups, length(t));
+
     resultsDecent(iScenario) = getResultsAnalytic("decent", a0, par);
 
 end

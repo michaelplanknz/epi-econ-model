@@ -6,13 +6,21 @@ outFolder = '../output/';
 figFolder = '../figures/';
 
 % Set to true to save Figures as .png files
-saveFlag = false;
+saveFlag = true;
+
+
+% Select values of Beta and costPerInf to plot
+Beta_arr       = [0.3, 0.6];
+costPerInf_arr = [0.2   0.6   1.2];
+nPlots = length(Beta_arr);
+nSubplots = length(costPerInf_arr);
 
 % Load previously saved model results
 fIn = outFolder + "results_for_plots.mat";
 load(fIn);
 
-
+Beta_arr       = [0.3, 0.6];
+costPerInf_arr = [0.2   0.6   1.2];
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % Plotting - individual scenario plots
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -157,9 +165,9 @@ imagesc(Beta_vals/par.Gamma, costPerInf_vals*dollarsPerInf, stratCode);
 h = gca; h.YDir = 'normal';
 h.Colormap = parula;
 xlabel('R_0')
-text(1.25, 14000, 'suppression')
-text(2.5, 14000, 'elimination')
-text(2.3, 5000, 'mitigation', 'Color', 'w')
+text(1.3, 7000, 'suppression', 'Rotation', 90)
+text(2.4, 12000, 'elimination')
+text(2.2, 4000, 'mitigation', 'Color', 'w')
 ylabel('cost per infection')
 title('(d) optimal strategy')
 
@@ -180,8 +188,6 @@ imagesc(Beta_vals/par.Gamma, costPerInf_vals*dollarsPerInf, tCrit);
 cb = colorbar;
 h = gca; h.YDir = 'normal';
 h.Colormap = hot;
-clim([0 2000])
-xlim([1.375, inf])
 cb.Label.String = 'threshold time (days)';
 cb.Label.Rotation = 270;
 cb.Label.Position(1) = 4;

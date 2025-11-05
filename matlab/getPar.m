@@ -28,8 +28,8 @@ par.nGroups = length(par.N);
 par.Beta = 0.3;
 
 % Linear and quadratic cost coefficients in each group (units of $10k)
-par.costlin = 0;
-par.costquad = 0.02;
+par.costlin = 0.0045;              % 0
+par.costquad = 0.0036;        % 0.02
 
 % Cost per infection in each group (units of $10k)
 par.costPerInf = 0.1;

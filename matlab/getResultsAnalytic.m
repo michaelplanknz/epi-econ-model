@@ -1,9 +1,11 @@
 function [results] = getResultsAnalytic(probType, a0, par)
 
 % Iteration settings
-maxTries = 100;
-relTol = 1e-10;
-relFact = 0.5;
+maxTries = 1000;
+relTol = 1e-8;
+
+% Relaxation factor for iteration - decreasing with iteration count
+relFact = 0.3 + 0.7*exp(-15*linspace(0, 1, maxTries));
 
 % Vector of times
 t = 0:par.dt:par.tMax;
@@ -34,15 +36,36 @@ while iTry <= maxTries & ~convFlag
     aNew = (par.costlin + 2*par.costquad)./(2*par.costquad + coeff*par.costPerInf.*  (par.Beta*I)./par.N  .*  S(:, end)./par.N  );
 
     % Update a using specified relaxation factor
-    a = max(0, min(1, (1-relFact)*a + relFact*aNew ));
+    a = max(0, min(1, (1-relFact(iTry))*a + relFact(iTry)*aNew ));
 
     % Test for convergence
-    convFlag = max(max(abs(a-aSav))) / max(max(abs(aSav))) <= relTol;
+    dx =  max(max(abs(a-aSav))) / max(max(abs(aSav)));
+    convFlag = dx <= relTol;
     iTry = iTry+1;
 end
 
 if ~convFlag
-    fprintf('Waring: analytic method not converged\n')
+    fprintf('Waring: analytic method not converged, dx = %.4e\n', dx)
+
+    figure(1);
+    hold on
+
+    for ii = 1:4
+
+    
+        % Solve SIR model
+        [S, I, ~] = solveModelFull(a, a, par);
+    
+        % Calculate analytical solution
+        aNew = (par.costlin + 2*par.costquad)./(2*par.costquad + coeff*par.costPerInf.*  (par.Beta*I)./par.N  .*  S(:, end)./par.N  );
+    
+        % Update a using specified relaxation factor
+        a = max(0, min(1, (1-relFact(end))*a + relFact(end)*aNew ));
+
+       plot(t, a)
+       pause
+    end
+    0
 end
 
 

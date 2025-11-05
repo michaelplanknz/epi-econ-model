@@ -15,18 +15,12 @@ outFolder = '../output/';
 fIn = outFolder + "results.mat";
 load(fIn);
 
-% Select values of Beta and costPerInf to plot
-Beta_arr       = [0.3, 0.6];
-costPerInf_arr = [0.1   0.5   1.2];
-
-% Values for final heat plot
+% Values for final heat map plot
 Beta_fix = 0.6;
-costPerInf_fix = 0.5;
+costPerInf_fix = 0.6;
 tDetRet_vals = 0:0.005:0.2;
 alpha_TTI_vals = 0.5:0.01:1;
 
-nPlots = length(Beta_arr);
-nSubplots = length(costPerInf_arr);
 
 % Upper limit for y axis for cost plots for each beta
 cUpper = [40 80];
