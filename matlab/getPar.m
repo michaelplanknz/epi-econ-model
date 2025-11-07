@@ -1,13 +1,12 @@
 function par = getPar()
 
 % Number of days to simulate
-par.tMax = 600;
+par.tMax = 800;
 
 par.dt = 0.1;
 
 % Spacing of time mesh points for defining control function (days)
 par.meshSpace = 10;
-
 
 
 % Recovery rate (days-1)
@@ -29,8 +28,8 @@ par.nGroups = length(par.N);
 par.Beta = 0.3;
 
 % Linear and quadratic cost coefficients in each group (units of $10k)
-par.costlin = 0;
-par.costquad = 0.02;
+par.costlin = 0.0045;              % 0
+par.costquad = 0.0036;        % 0.02
 
 % Cost per infection in each group (units of $10k)
 par.costPerInf = 0.1;
@@ -40,7 +39,8 @@ par.costPerInf = 0.1;
 % Elimination model parameters 
 
 % Outbreak size at first detection
-par.xOutbreak = 20;
+%par.xOutbreak = 20;
+par.tDet = 14;
 
 % Outbreak frequency (days-1)
 par.r = 1/150;
@@ -52,6 +52,11 @@ par.b = 3000;
 % outbreaks
 par.controlFrac = 0.4;
 
-% Multiplicative effect of TTI measures on R0
+% Multiplicative effect of TTI measures on R0 (alpha=1 is no effect)
 par.alpha_TTI = 0.8;
 
+% Max. prevalence (%) at which TTI works 
+par.TTI_max = 1000;
+
+% Breadth of logistic transition of TTI from on to off
+par.TTI_breadth = 50;
