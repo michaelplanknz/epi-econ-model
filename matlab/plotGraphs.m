@@ -139,7 +139,7 @@ clim([0 cMax]);
 h = gca; h.YDir = 'normal';
 h.Colormap = hot;
 xlabel('R_0')
-ylabel('cost per infection')
+ylabel('cost per infection ($)')
 title('(a) decentralised cost ($ bn)')
 nexttile;
 imagesc(Beta_vals/par.Gamma, costPerInf_vals*dollarsPerInf, costMit*dollarsPerInf/1e9);
@@ -148,7 +148,7 @@ clim([0 cMax]);
 h = gca; h.YDir = 'normal';
 h.Colormap = hot;
 xlabel('R_0')
-ylabel('cost per infection')
+ylabel('cost per infection ($)')
 title('(b) migitgation cost ($ bn)')
 nexttile;
 imagesc(Beta_vals/par.Gamma, costPerInf_vals*dollarsPerInf, min(costElim, costSup)*dollarsPerInf/1e9);
@@ -158,7 +158,7 @@ h = gca; h.YDir = 'normal';
 h.Colormap = hot;
 xline(R0crit, 'w--')
 xlabel('R_0')
-ylabel('cost per infection')
+ylabel('cost per infection ($)')
 title('(c) elimination/suppression cost ($ bn)')
 nexttile;
 imagesc(Beta_vals/par.Gamma, costPerInf_vals*dollarsPerInf, stratCode);
@@ -168,7 +168,7 @@ xlabel('R_0')
 text(1.3, 7000, 'suppression', 'Rotation', 90)
 text(2.4, 12000, 'elimination')
 text(2.2, 4000, 'mitigation', 'Color', 'w')
-ylabel('cost per infection')
+ylabel('cost per infection ($)')
 title('(d) optimal strategy')
 
 if saveFlag
@@ -192,7 +192,7 @@ cb.Label.String = 'threshold time (days)';
 cb.Label.Rotation = 270;
 cb.Label.Position(1) = 4;
 xlabel('R_0')
-ylabel('cost per infection')
+ylabel('cost per infection ($)')
 title('(a)')
 
 nexttile;
