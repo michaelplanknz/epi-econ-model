@@ -47,25 +47,22 @@ end
 if ~convFlag
     fprintf('Waring: analytic method not converged, dx = %.4e\n', dx)
 
-    figure(1);
-    hold on
-
-    for ii = 1:4
-
+%     figure(1);
+%     hold on
+%     for ii = 1:4
+%         % Solve SIR model
+%         [S, I, ~] = solveModelFull(a, a, par);
+%     
+%         % Calculate analytical solution
+%         aNew = (par.costlin + 2*par.costquad)./(2*par.costquad + coeff*par.costPerInf.*  (par.Beta*I)./par.N  .*  S(:, end)./par.N  );
+%     
+%         % Update a using specified relaxation factor
+%         a = max(0, min(1, (1-relFact(end))*a + relFact(end)*aNew ));
+% 
+%        plot(t, a)
+%        pause
+%     end
     
-        % Solve SIR model
-        [S, I, ~] = solveModelFull(a, a, par);
-    
-        % Calculate analytical solution
-        aNew = (par.costlin + 2*par.costquad)./(2*par.costquad + coeff*par.costPerInf.*  (par.Beta*I)./par.N  .*  S(:, end)./par.N  );
-    
-        % Update a using specified relaxation factor
-        a = max(0, min(1, (1-relFact(end))*a + relFact(end)*aNew ));
-
-       plot(t, a)
-       pause
-    end
-    0
 end
 
 
