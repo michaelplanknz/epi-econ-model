@@ -6,7 +6,7 @@ outFolder = '../output/';
 figFolder = '../figures/';
 
 % Set to true to save Figures as .png files
-saveFlag = false;
+saveFlag = true;
 
 
 % Select values of Beta and costPerInf to plot

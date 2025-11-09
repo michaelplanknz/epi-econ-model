@@ -45,8 +45,8 @@ par.tDet = 14;
 % Outbreak frequency (days-1)
 par.r = 1/150;
 
-% Border closure cost per unit time
-par.b = 3000;
+% Border closure cost per unit time (units of $10k)
+par.b = 3380;
 
 % Fraction of country under control measures to eliminate border related
 % outbreaks
