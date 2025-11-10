@@ -24,11 +24,10 @@ par.N = 5e6;
 par.nGroups = length(par.N);
 
 % Transmission rate matrix
-%par.Beta = 0.3*[1.6 0.4; 0.4 0.1];
 par.Beta = 0.3;
 
 % Linear and quadratic cost coefficients in each group (units of $10k)
-par.costlin = 0.0045;              % 0
+par.costlin = 0.0045;         % 0
 par.costquad = 0.0036;        % 0.02
 
 % Cost per infection in each group (units of $10k)
@@ -39,7 +38,6 @@ par.costPerInf = 0.1;
 % Elimination model parameters 
 
 % Outbreak size at first detection
-%par.xOutbreak = 20;
 par.tDet = 14;
 
 % Outbreak frequency (days-1)
@@ -55,8 +53,4 @@ par.controlFrac = 0.4;
 % Multiplicative effect of TTI measures on R0 (alpha=1 is no effect)
 par.alpha_TTI = 0.8;
 
-% Max. prevalence (%) at which TTI works 
-par.TTI_max = 1000;
 
-% Breadth of logistic transition of TTI from on to off
-par.TTI_breadth = 50;
