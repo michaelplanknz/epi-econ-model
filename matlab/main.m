@@ -64,15 +64,8 @@ for iScenario = 1:nScenarios
         % Need to initialise optimization routine somehow on first
         % iteration
 
-        % Solve central planner's problem with heuristic control function
-        x0 = [0, 0]; 
-        xOptHeur = fmincon(@(x)objFnCentHeur(x, par), x0, [], [], [], [], zeros(size(x0)), [1 inf], [], opts1 );
-        
-        % Get model solution and costs for heuristic optimum
-        [f, resultsCentHeur(iScenario)] = objFnCentHeur(xOptHeur, par);
-        
-        % Use heuristic solution to set initial condition for full optimization
-        x0 = interp1(t', resultsCentHeur(iScenario).a', tMesh)';
+        % Initialise centralised problem at uncontrolled state
+        x0 = ones(1, length(tMesh));
 
         % Initialise decentralised problem at uncontrolled state
         a0 = ones(par.nGroups, length(t));
