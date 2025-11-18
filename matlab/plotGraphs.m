@@ -158,6 +158,7 @@ ind2 = find(costElim(1, :) <= costSup(1, :), 1, 'first');
 R0crit = mean(Beta_vals([ind1 ind2]))/par.Gamma;
 
 iPlot = 2*nPlots + 1;
+iFile = nPlots+1;
 h = figure(iPlot);
 h.Position = [   141   407   770   561];
 tiledlayout(2, 2, "TileSpacing", "compact");
@@ -201,13 +202,14 @@ ylabel('cost per infection ($)')
 title('(d) optimal strategy')
 
 if saveFlag
-    fName = "fig" + iPlot + ".png";
+    fName = "fig" + iFile + ".png";
     saveas(h, figFolder + fName);
 end
 
 
 
 iPlot = iPlot + 1;
+iFile = iFile + 1;
 h = figure(iPlot);
 h.Position = [   139   463   994   385];
 tiledlayout(1, 2, "TileSpacing", "compact");
