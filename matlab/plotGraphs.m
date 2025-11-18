@@ -31,7 +31,12 @@ for iPlot = 1:nPlots
     h = figure(iPlot);
     h.Position = [139          69        1024         912];
     tiledlayout(nSubplots, 2, "TileSpacing", "compact")
-     
+    
+    h = figure(iPlot+nPlots);
+    h.Position = [139          69        1500         350];
+    tiledlayout(1, nSubplots, "TileSpacing", "compact")
+
+
     for iSubplot = 1:nSubplots
 
         iScenario = find(Beta_list == Beta_arr(iPlot) & costPerInf_list == costPerInf_arr(iSubplot));
@@ -59,9 +64,12 @@ for iPlot = 1:nPlots
         % Set aElim to be the elimination level during outbreaks
         aElim(tRel >= 1/par.r-tDur) = aOptElim;
         
-   
-        
-        
+        % Calculate dC/da as a check
+        Sinf = resultsDecent(iScenario).S(end)/par.N;
+        dCda = par.costPerInf*par.Beta/par.N * Sinf * resultsDecent(iScenario).a .* resultsDecent(iScenario).I - par.costlin - 2*par.costquad*(1-resultsDecent(iScenario).a);
+        indControl = find(resultsDecent(iScenario).a < 0.99999999);
+
+        figure(iPlot);
         nexttile;
         plot(t, results_u(iScenario).a.^2, 'LineWidth', 2)
         hold on
@@ -94,17 +102,38 @@ for iPlot = 1:nPlots
         xlabel('time (days)')
         ylabel('cumulative cost ($bn)')
         title(letters(2*iSubplot) + " cost per infection = $" + dollarsPerInf*par.costPerInf)
+
+
+        figure(iPlot+nPlots);
+        nexttile;
+        plot(t, dCda*dollarsPerInf/1e9)
+        hold on
+        if length(indControl) >= 2
+            fill(t(indControl([1, end, end, 1])), [-5, -5, 0, 0 ]*1e-8, [0.4 0.4 0.4], 'FaceAlpha', 0.2, 'LineStyle', 'none'  )
+        end
+        xlim([0 tHoriz])
+        ylim([-5, 0]*1e-8)
+        grid on
+        xlabel('time (days)')
+        ylabel('\delta C/\delta a ($bn)')
+        title(letters(iSubplot) + " cost per infection = $" + dollarsPerInf*par.costPerInf)
     end
+    
+    figure(iPlot);
     sgtitle("R_0=" + par.Beta/par.Gamma)
     l = legend('unmitigated', 'decentralised', 'mitigation', 'suppression', 'elimination', 'Location', 'southoutside');
     l.Layout.Tile = 'south';
-
-
     if saveFlag
         fName = "fig" + iPlot + ".png";
         saveas(h, figFolder + fName);
     end
 
+    figure(iPlot+nPlots);
+    sgtitle("R_0=" + par.Beta/par.Gamma)
+    if saveFlag
+        fName = "figS" + iPlot + ".png";
+        saveas(h, figFolder + fName);
+    end 
 end
 
 
@@ -128,7 +157,7 @@ ind1 = find(costElim(1, :) > costSup(1, :), 1, 'last');
 ind2 = find(costElim(1, :) <= costSup(1, :), 1, 'first');
 R0crit = mean(Beta_vals([ind1 ind2]))/par.Gamma;
 
-iPlot = iPlot + 1;
+iPlot = 2*nPlots + 1;
 h = figure(iPlot);
 h.Position = [   141   407   770   561];
 tiledlayout(2, 2, "TileSpacing", "compact");

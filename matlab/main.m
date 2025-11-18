@@ -26,9 +26,9 @@ Beta_list = Beta_mat(:);
 costPerInf_list = costPerInf_mat(:);
 nScenarios = length(Beta_list);
 
-% Set options for opimization routine (for heuristic and full problems)
-opts1 = optimoptions('fmincon', 'Display', 'notify');
-opts2 = optimoptions('fmincon', 'Display', 'notify', 'MaxFunctionEvaluations', 20000, 'MaxIterations', 5000);
+% Set options for opimization routine 
+%opts1 = optimoptions('fmincon', 'Display', 'notify');
+opts = optimoptions('fmincon', 'Display', 'notify', 'MaxFunctionEvaluations', 20000, 'MaxIterations', 5000);
 
 % Loop through parameter combinations
 for iScenario = 1:nScenarios
@@ -85,7 +85,7 @@ for iScenario = 1:nScenarios
     end
 
     % Solve central planner's problem with full time-dependent control variable
-    xOptCent = fmincon(@(x)objFnCentFull(x, par), x0, [], [], [], [], zeros(nMeshPts, par.nGroups), ones(nMeshPts, par.nGroups), [], opts2 );
+    xOptCent = fmincon(@(x)objFnCentFull(x, par), x0, [], [], [], [], zeros(nMeshPts, par.nGroups), ones(nMeshPts, par.nGroups), [], opts );
     
     % Get model solution and costs for full optimum
     [~, resultsCent(iScenario)] = objFnCentFull(xOptCent, par);
