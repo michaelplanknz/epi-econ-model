@@ -121,7 +121,7 @@ for iPlot = 1:nPlots
         title(letters(iSubplot) + " cost per infection = $" + dollarsPerInf*par.costPerInf)
     end
     
-    figure(iPlot);
+    h = figure(iPlot);
     sgtitle("R_0=" + par.Beta/par.Gamma)
     l = legend('unmitigated', 'decentralised', 'mitigation', 'suppression', 'elimination', 'Location', 'southoutside');
     l.Layout.Tile = 'south';
@@ -130,7 +130,7 @@ for iPlot = 1:nPlots
         saveas(h, figFolder + fName);
     end
 
-    figure(iPlot+nPlots);
+    h = figure(iPlot+nPlots);
     sgtitle("R_0=" + par.Beta/par.Gamma)
     if saveFlag
         fName = "figS" + iPlot + ".png";
