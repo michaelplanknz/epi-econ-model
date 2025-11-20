@@ -108,16 +108,16 @@ for iPlot = 1:nPlots
 
         figure(iPlot+nPlots);
         nexttile;
-        plot(t, dCda*dollarsPerInf/1e9)
+        plot(t, dCda*dollarsPerInf)
         hold on
         if length(indControl) >= 2
-            fill(t(indControl([1, end, end, 1])), [-5, -5, 0, 0 ]*1e-8, [0.4 0.4 0.4], 'FaceAlpha', 0.2, 'LineStyle', 'none'  )
+            fill(t(indControl([1, end, end, 1])), [-50, -50, 0, 0 ], [0.4 0.4 0.4], 'FaceAlpha', 0.2, 'LineStyle', 'none'  )
         end
         xlim([0 tHoriz])
-        ylim([-5, 0]*1e-8)
+        ylim([-50, 0])
         grid on
         xlabel('time (days)')
-        ylabel('\delta C/\delta a ($bn)')
+        ylabel('\delta C/\delta a ($ per person per day)')
         title(letters(iSubplot) + " cost per infection = $" + dollarsPerInf*par.costPerInf)
     end
     
