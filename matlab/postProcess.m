@@ -75,6 +75,14 @@ for iScenario = 1:nScenarios
     % Record code for optimal strategy: 1 = mitigation, 2 = suppression, 3 = elimination
     [~, stratCode(iRow, jCol)] = min([costMit(iRow, jCol), costSup(iRow, jCol), costElim(iRow, jCol)]);
 
+    % Set code = 0 when mitigation response does not appreciably reduce
+    % activity or cost is less than 5% below decentralised cost
+    if stratCode(iRow, jCol) == 1 & min(resultsCent(iScenario).a) >= 0.999 %| costMit(iRow, jCol) >= 0.95*costDecent(iRow, jCol))
+        stratCode(iRow, jCol) = 0;
+    end
+
+
+
 
     % Calculate threshold time for elimination
     tCrit(iRow, jCol) = costMit(iRow, jCol)/min(CElim, CSup);

@@ -197,9 +197,10 @@ imagesc(Beta_vals/par.Gamma, costPerInf_vals*dollarsPerInf, stratCode);
 h = gca; h.YDir = 'normal';
 h.Colormap = parula;
 xlabel('R_0')
-text(1.3, 7000, 'suppression', 'Rotation', 90)
+text(1.4, 8000, 'suppression', 'Rotation', 90)
 text(2.4, 12000, 'elimination')
-text(2.2, 4000, 'mitigation', 'Color', 'w')
+text(2.2, 5000, 'mitigation', 'Color', 'w')
+text(2.2, 1200, 'no PSHMs', 'Color', 'w')
 ylabel('cost per infection ($)')
 title('(d) optimal strategy')
 
