@@ -246,3 +246,19 @@ if saveFlag
     fName = "fig" + iFile + ".png";
     saveas(h, figFolder + fName);
 end
+
+
+
+iPlot = iPlot + 1;
+iFile = iFile + 1;
+h = figure(iPlot);
+imagesc(Beta_vals/par.Gamma, costPerInf_vals*dollarsPerInf, (costDecent-costMit)*dollarsPerInf/1e9);
+colorbar;
+%clim([0 cMax]);
+h = gca; h.YDir = 'normal';
+h.Colormap = hot;
+xlabel('R_0')
+ylabel('cost per infection ($)')
+title('difference in cost between decentralised and centralised ($ bn)')
+
+
