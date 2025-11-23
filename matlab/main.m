@@ -56,10 +56,10 @@ for iScenario = 1:nScenarios
     
     
     
+
     %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-    % Solve centralised problem
+    % Initial conditions for centralised and decentralised
     %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-    
     if iScenario == 1
         % Need to initialise optimization routine somehow on first
         % iteration
@@ -84,13 +84,16 @@ for iScenario = 1:nScenarios
         end
     end
 
+    %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+    % Solve centralised problem
+    %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
     % Solve central planner's problem with full time-dependent control variable
     xOptCent = fmincon(@(x)objFnCentFull(x, par), x0, [], [], [], [], zeros(nMeshPts, par.nGroups), ones(nMeshPts, par.nGroups), [], opts );
     
     % Get model solution and costs for full optimum
     [~, resultsCent(iScenario)] = objFnCentFull(xOptCent, par);
     
-
+    
 
     %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
     % Solve decentralised problem with analytic method
