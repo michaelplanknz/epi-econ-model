@@ -98,25 +98,7 @@ for iScenario = 1:nScenarios
     % Use longer time period if solution end up under HIT
     R0 = eigs(par.Beta, [], 1)/par.Gamma;
     if resultsCent(iScenario).S(end)/par.N > 1/R0
-        fprintf('    epi size %.3f under HIT %.3f, running with longer T... ', 1-resultsCent(iScenario).S(end)/par.N, 1-1/R0)
-
-        par_temp = par;
-        par_temp.tMax = 1.5*par.tMax;
-        tMesh_temp = 0:par.meshSpace:par_temp.tMax; 
-        x0_temp = [x0, ones(1, length(tMesh_temp)-length(x0)) ];
-        xOptTemp = fmincon(@(x)objFnCentFull(x, par_temp), x0_temp, [], [], [], [], zeros(length(tMesh_temp), par.nGroups), ones(length(tMesh_temp), par.nGroups), [], opts );
-        [~, resultsCent(iScenario)] = objFnCentFull(xOptTemp, par_temp);
-        S2 = resultsCent(iScenario).S(end);
-        % Truncate back to original time horizon
-        resultsCent(iScenario).S = resultsCent(iScenario).S(1:nTimePts);
-        resultsCent(iScenario).I = resultsCent(iScenario).I(1:nTimePts);
-        resultsCent(iScenario).R = resultsCent(iScenario).R(1:nTimePts);
-        resultsCent(iScenario).a = resultsCent(iScenario).a(1:nTimePts);
-        resultsCent(iScenario).costInf = resultsCent(iScenario).costInf(1:nTimePts);
-        resultsCent(iScenario).costCont = resultsCent(iScenario).costCont(1:nTimePts);
-        resultsCent(iScenario).x = resultsCent(iScenario).x(1:nMeshPts);
-        S1 = resultsCent(iScenario).S(end);
-        fprintf('gives epi size %.3f at original T, %.3f at new T\n', 1-S1/par.N, 1-S2/par.N);
+        fprintf('    Warning: final size %.3f is under HIT %.3f, may need to run for longer\n', 1-resultsCent(iScenario).S(end)/par.N, 1-1/R0)
     end
 
     %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
