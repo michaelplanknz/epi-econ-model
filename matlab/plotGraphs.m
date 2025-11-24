@@ -48,24 +48,9 @@ for iPlot = 1:nPlots
         par.costPerInf = costPerInf_arr(iSubplot);
     
         % Compute elimination costs
-        [CElim, aOptElim, CSup, aSup] = calcElimCost(par);
+        [~, ~, CElimSim, aElimSim, CSupRate, aSup] = calcElimCost(t, par);
     
-        
-        % For the purposes of plotting, simulate the elimination response to sporadic
-        % outbreaks
-        aElim = ones(size(t));
 
-        % Mean outbreak duration
-        R0 = eigs(par.Beta, [], 1)/par.Gamma;
-        tDur = par.tDet*(R0-1)/(1 - R0*par.alpha_TTI*aOptElim^2);
-        
-        % Assume outbreaks are evenly spaced at the expected spacing,
-        % create a repeating time variable with this frequency
-        tRel = mod(t, 1/par.r);
-        
-        % Set aElim to be the elimination level during outbreaks
-        aElim(tRel >= 1/par.r-tDur) = aOptElim;
-        
         % Calculate dC/da as a check
         Sinf = resultsDecent(iScenario).S(end)/par.N;
         dCda = par.costPerInf*par.Beta/par.N * Sinf * resultsDecent(iScenario).a .* resultsDecent(iScenario).I - par.costlin - 2*par.costquad*(1-resultsDecent(iScenario).a);
@@ -78,7 +63,7 @@ for iPlot = 1:nPlots
         plot(t, resultsDecent(iScenario).a.^2, 'LineWidth', 2)
         plot(t, resultsCent(iScenario).a.^2, 'LineWidth', 2)
         plot(t, aSup^2*ones(size(t)), 'LineWidth', 2)
-        plot(t, aElim.^2, 'LineWidth', 2)
+        plot(t, aElimSim.^2, 'LineWidth', 2)
         set(gca, 'ColorOrderIndex', 1);
         plot(t, results_u(iScenario).R/sum(par.N), '--')
         plot(t, resultsDecent(iScenario).R/sum(par.N), '--')
@@ -96,8 +81,8 @@ for iPlot = 1:nPlots
         hold on
         plot(t, (resultsDecent(iScenario).costInf + resultsDecent(iScenario).costCont)*dollarsPerInf/1e9)
         plot(t, (resultsCent(iScenario).costInf + resultsCent(iScenario).costCont)*dollarsPerInf/1e9)
-        plot(t, CSup*t*dollarsPerInf/1e9 )
-        plot(t, CElim*t*dollarsPerInf/1e9 )
+        plot(t, CSupRate*t*dollarsPerInf/1e9 )
+        plot(t, CElimSim*dollarsPerInf/1e9 )
         xlim([0 tHoriz])
         ylim([0 cUpper(iPlot)])
         grid on

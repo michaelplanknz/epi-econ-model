@@ -68,9 +68,9 @@ for iScenario = 1:nScenarios
     costMit(iRow, jCol) = resultsCent(iScenario).costInf(end) + resultsCent(iScenario).costCont(end);
 
      % Compute elimination costs
-    [CElim, ~, CSup] = calcElimCost(parInd);
-    costElim(iRow, jCol) = CElim*tHoriz;
-    costSup(iRow, jCol) = CSup*tHoriz;
+    [CElimRate, ~, ~, ~, CSupRate] = calcElimCost(t, parInd);
+    costElim(iRow, jCol) = CElimRate*tHoriz;
+    costSup(iRow, jCol) = CSupRate*tHoriz;
 
     % Record code for optimal strategy: 1 = mitigation, 2 = suppression, 3 = elimination
     [~, stratCode(iRow, jCol)] = min([costMit(iRow, jCol), costSup(iRow, jCol), costElim(iRow, jCol)]);
@@ -85,7 +85,7 @@ for iScenario = 1:nScenarios
 
 
     % Calculate threshold time for elimination
-    tCrit(iRow, jCol) = costMit(iRow, jCol)/min(CElim, CSup);
+    tCrit(iRow, jCol) = costMit(iRow, jCol)/min(CElimRate, CSupRate);
 
 end
 
@@ -107,8 +107,8 @@ for iRow = 1:nRows
     parInd.alpha_TTI = alpha_TTI_vals(iRow);
     for jCol = 1:mCols
         parInd.r = tDetRet_vals(jCol)/parInd.tDet;
-        [CElim, ~, CSup] = calcElimCost(parInd);    
-        tCrit2(iRow, jCol) = costComp/min(CElim, CSup);
+        [CElimRate, ~, ~, ~, CSupRate] = calcElimCost(t, parInd);    
+        tCrit2(iRow, jCol) = costComp/min(CElimRate, CSupRate);
     end
 end
 
