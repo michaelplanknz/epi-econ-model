@@ -123,7 +123,7 @@ for iPlot = 1:nPlots
     
     h = figure(iPlot);
     sgtitle("R_0=" + par.Beta/par.Gamma)
-    l = legend('unmitigated', 'decentralised', 'mitigation', 'suppression', 'elimination', 'Location', 'southoutside');
+    l = legend('unmitigated', 'mitigation (decent.)', 'mitigation (cent.)', 'suppression', 'elimination', 'Location', 'southoutside');
     l.Layout.Tile = 'south';
     if saveFlag
         fName = "fig" + iPlot + ".png";
@@ -172,7 +172,7 @@ h = gca; h.YDir = 'normal';
 h.Colormap = hot;
 xlabel('R_0')
 ylabel('cost per infection ($)')
-title('(a) decentralised cost ($ bn)')
+title('(a) mitigation (decent.) cost ($ bn)')
 nexttile;
 imagesc(Beta_vals/par.Gamma, costPerInf_vals*dollarsPerInf, costMit*dollarsPerInf/1e9);
 colorbar;
@@ -181,7 +181,7 @@ h = gca; h.YDir = 'normal';
 h.Colormap = hot;
 xlabel('R_0')
 ylabel('cost per infection ($)')
-title('(b) migitgation cost ($ bn)')
+title('(b) migitgation (cent.) cost ($ bn)')
 nexttile;
 imagesc(Beta_vals/par.Gamma, costPerInf_vals*dollarsPerInf, min(costElim, costSup)*dollarsPerInf/1e9);
 colorbar;
@@ -261,4 +261,8 @@ xlabel('R_0')
 ylabel('cost per infection ($)')
 title('difference in cost between decentralised and centralised ($ bn)')
 
+if saveFlag
+    fName = "figS3.png";
+    saveas(h, figFolder + fName);
+end
 

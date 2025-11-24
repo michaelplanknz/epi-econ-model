@@ -46,6 +46,8 @@ for iScenario = 1:nScenarios
     % Set up time vector, and time mesh points for defining control function
     t = 0:par.dt:par.tMax;
     tMesh = 0:par.meshSpace:par.tMax;
+
+    nTimePts = length(t);
     
     % Define no control state
     nMeshPts = length(tMesh);
@@ -93,7 +95,11 @@ for iScenario = 1:nScenarios
     % Get model solution and costs for full optimum
     [~, resultsCent(iScenario)] = objFnCentFull(xOptCent, par);
     
-    
+    % Use longer time period if solution end up under HIT
+    R0 = eigs(par.Beta, [], 1)/par.Gamma;
+    if resultsCent(iScenario).S(end)/par.N > 1/R0
+        fprintf('    Warning: final size %.3f is under HIT %.3f, may need to run for longer\n', 1-resultsCent(iScenario).S(end)/par.N, 1-1/R0)
+    end
 
     %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
     % Solve decentralised problem with analytic method
