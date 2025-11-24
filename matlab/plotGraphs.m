@@ -48,7 +48,7 @@ for iPlot = 1:nPlots
         par.costPerInf = costPerInf_arr(iSubplot);
     
         % Compute elimination costs
-        [~, ~, CElimSim, aElimSim, CSupRate, aSup] = calcElimCost(t, par);
+        [CElimRate, ~, CElimSim, aElimSim, CSupRate, aSup] = calcElimCost(t, par);
     
 
         % Calculate dC/da as a check
@@ -83,6 +83,8 @@ for iPlot = 1:nPlots
         plot(t, (resultsCent(iScenario).costInf + resultsCent(iScenario).costCont)*dollarsPerInf/1e9)
         plot(t, CSupRate*t*dollarsPerInf/1e9 )
         plot(t, CElimSim*dollarsPerInf/1e9 )
+%         set(gca, 'ColorOrderIndex', 1);
+%         plot(t, CElimRate*t*dollarsPerInf/1e9, ':')
         xlim([0 tHoriz])
         ylim([0 cUpper(iPlot)])
         grid on
