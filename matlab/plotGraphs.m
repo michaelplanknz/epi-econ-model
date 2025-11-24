@@ -261,4 +261,8 @@ xlabel('R_0')
 ylabel('cost per infection ($)')
 title('difference in cost between decentralised and centralised ($ bn)')
 
+if saveFlag
+    fName = "figS3.png";
+    saveas(h, figFolder + fName);
+end
 
