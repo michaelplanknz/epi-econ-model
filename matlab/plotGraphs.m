@@ -72,7 +72,7 @@ for iPlot = 1:nPlots
         xlim([0 tHoriz])
         grid on
         xlabel('time (days)')
-        ylabel('[attack rate  ,  a(t)^2]')
+        ylabel('[cumulative infections  ,  a(t)^2]')
         title(letters(2*iSubplot-1) + " cost per infection = $" + dollarsPerInf*par.costPerInf)
  
         % Cost comparison
