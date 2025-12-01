@@ -253,3 +253,16 @@ if saveFlag
     saveas(h, figFolder + fName);
 end
 
+
+% Extra figure showing the (ignored) infection cost of elimination (arising
+% from small border-related outbreaks)
+iPlot = iPlot + 1;
+h = figure(iPlot);
+imagesc(Beta_vals/par.Gamma, costPerInf_vals*dollarsPerInf, costInfElim*dollarsPerInf/1e9);
+colorbar;
+h = gca; h.YDir = 'normal';
+h.Colormap = hot;
+xlabel('R_0')
+ylabel('cost per infection ($)')
+title('ignored infection cost of elimination ($ bn)')
+

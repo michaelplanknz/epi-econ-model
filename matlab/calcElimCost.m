@@ -1,7 +1,16 @@
-function [CElimRate, aOptElim, CElimSim, aElimSim, CSupRate, aSup] = calcElimCost(t, par)
+function [CElimRate, aOptElim, CElimSim, aElimSim, CSupRate, aSup, incRateElim] = calcElimCost(t, par)
 
-% Function to calculatet the elimination and suppression cost per unit time according to
+% Function to calculatet the elimination and suppression costs and associated quantities according to
 % the model
+%
+% CElimRate, aOptElim represent the expected value of the cost per unit time
+% and activity level, respectively, under the elimination model
+% CElimSim and aElimSim provide time-dependent values, assuming outbreaks occur evenly spaced
+% CSupRate and aSup are the cost per unit time and activity level under the
+% suppression model
+% incRateElim represents the expected infection incidecnce rate per unit
+% time as a result of small border-related outbreaks under the elimination
+% model
 
 R0 = eigs(par.Beta, [], 1)/par.Gamma;
 dt = t(2)-t(1);
@@ -34,6 +43,10 @@ aOptElim = fmincon(myF, 0, [], [], [], [], 0, aSup, [], opts );
 
 % Calculate elimination cost per unit time
 CElimRate = par.b + par.r*par.tDet*(R0-1)*(costlin_avg*(1-aOptElim) + costquad_avg*(1-aOptElim)^2)/(1 - R0*par.alpha_TTI*aOptElim^2);
+
+% Calculate the average incidence rate (number of infections per unit time)
+% due to border-related outbreaks in the elimination model
+incRateElim = par.r * par.Gamma * (exp((par.Beta-par.Gamma)*par.tDet)-1)/(par.Gamma-par.Beta*par.alpha_TTI*aOptElim^2);
 
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%

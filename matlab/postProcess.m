@@ -49,7 +49,7 @@ costSup = zeros(size(Beta_mat));
 costElim = zeros(size(Beta_mat));
 stratCode = nan(size(Beta_mat));
 tCrit = nan(size(Beta_mat));
-
+costInfElim = nan(size(Beta_mat));
 
 % Calculate strategy costs across scenarios
 parInd = par;
@@ -68,9 +68,21 @@ for iScenario = 1:nScenarios
     costMit(iRow, jCol) = resultsCent(iScenario).costInf(end) + resultsCent(iScenario).costCont(end);
 
      % Compute elimination costs
-    [CElimRate, ~, ~, ~, CSupRate] = calcElimCost(t, parInd);
+    [CElimRate, aOptElim, ~, ~, CSupRate, ~, incRateElim] = calcElimCost(t, parInd);
     costElim(iRow, jCol) = CElimRate*tHoriz;
     costSup(iRow, jCol) = CSupRate*tHoriz;
+    
+    % Calculate the cost associated with infections from border-related
+    % outbreaks under the elimination strategy (this is ignored in
+    % subsequent calculations, but this is to check that it is negligible)
+    % [NB only calculate this if R0*alpha > 1, otherwise no reduction in
+    % activity is needed and suppression will always be preferred over
+    % elimination]
+    if parInd.Beta/parInd.Gamma*parInd.alpha_TTI > 1 
+        % Calculation is incidence rate (infections per unit time) * time
+        % horizon * cost per infection
+        costInfElim(iRow, jCol) = parInd.costPerInf * incRateElim*tHoriz;
+    end
 
     % Record code for optimal strategy: 1 = mitigation, 2 = suppression, 3 = elimination
     [~, stratCode(iRow, jCol)] = min([costMit(iRow, jCol), costSup(iRow, jCol), costElim(iRow, jCol)]);
