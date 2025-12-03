@@ -2,6 +2,8 @@
 
 This repository contains Matlab code to reproduce the results in the article ``Joint economic and epidemiological modelling of alternative pandemic response strategies''.
 
+Results in the pre-print were produced using the version of this repository tagged `v1.0`. 
+
 # How to use this repository
 
 * Navigate to the `Matlab/` folder and run the top-level script `main.m`. This will run the model across a range of parameter combinations and save the results in the `/output/` folder as `output/results.mat`.
