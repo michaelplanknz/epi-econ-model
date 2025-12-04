@@ -33,8 +33,12 @@ for iPlot = 1:nPlots
     h = figure(iPlot);
     h.Position = [139          69        1024         912];
     tiledlayout(nSubplots, 2, "TileSpacing", "compact")
-    
+
     h = figure(iPlot+nPlots);
+    h.Position = [139          69        1024         912];
+    tiledlayout(nSubplots, 2, "TileSpacing", "compact")
+    
+    h = figure(iPlot+2*nPlots);
     h.Position = [139          69        1500         350];
     tiledlayout(1, nSubplots, "TileSpacing", "compact")
 
@@ -56,6 +60,7 @@ for iPlot = 1:nPlots
         dCda = par.costPerInf*par.Beta/par.N * Sinf * resultsDecent(iScenario).a .* resultsDecent(iScenario).I - par.costlin - 2*par.costquad*(1-resultsDecent(iScenario).a);
         indControl = find(resultsDecent(iScenario).a < 0.99999999);
 
+        % Main scenario plot
         figure(iPlot);
         nexttile;
         plot(t, results_u(iScenario).a.^2, 'LineWidth', 2)
@@ -93,7 +98,46 @@ for iPlot = 1:nPlots
         title(letters(2*iSubplot) + " cost per infection = $" + dollarsPerInf*par.costPerInf)
 
 
+
+        % State-dependent version of the same figure
         figure(iPlot+nPlots);
+        nexttile;
+        plot(t, results_u(iScenario).a.^2, 'LineWidth', 2)
+        hold on
+        plot(t, resultsDecent_SD(iScenario).a.^2, 'LineWidth', 2)
+        plot(t, resultsCent(iScenario).a.^2, 'LineWidth', 2)
+        plot(t, aSup^2*ones(size(t)), 'LineWidth', 2)
+        plot(t, aElimSim.^2, 'LineWidth', 2)
+        set(gca, 'ColorOrderIndex', 1);
+        plot(t, results_u(iScenario).R/sum(par.N), '--')
+        plot(t, resultsDecent_SD(iScenario).R/sum(par.N), '--')
+        plot(t, resultsCent(iScenario).R/sum(par.N), '--')
+        ylim([0, 1])
+        xlim([0 tHoriz])
+        grid on
+        xlabel('time (days)')
+        ylabel('[cumulative infections  ,  a(t)^2]')
+        title(letters(2*iSubplot-1) + " cost per infection = $" + dollarsPerInf*par.costPerInf)
+ 
+        % Cost comparison
+        nexttile;
+        plot(t, results_u(iScenario).costInf*dollarsPerInf/1e9)
+        hold on
+        plot(t, (resultsDecent_SD(iScenario).costInf + resultsDecent(iScenario).costCont)*dollarsPerInf/1e9)
+        plot(t, (resultsCent(iScenario).costInf + resultsCent(iScenario).costCont)*dollarsPerInf/1e9)
+        plot(t, CSupRate*t*dollarsPerInf/1e9 )
+        plot(t, CElimSim*dollarsPerInf/1e9 )
+%         set(gca, 'ColorOrderIndex', 1);
+%         plot(t, CElimRate*t*dollarsPerInf/1e9, ':')
+        xlim([0 tHoriz])
+        ylim([0 cUpper(iPlot)])
+        grid on
+        xlabel('time (days)')
+        ylabel('cumulative cost ($bn)')
+        title(letters(2*iSubplot) + " cost per infection = $" + dollarsPerInf*par.costPerInf)
+
+
+        figure(iPlot+2*nPlots);
         nexttile;
         plot(t, dCda*dollarsPerInf)
         hold on
@@ -117,10 +161,21 @@ for iPlot = 1:nPlots
         saveas(h, figFolder + fName);
     end
 
+    
     h = figure(iPlot+nPlots);
     sgtitle("R_0=" + par.Beta/par.Gamma)
+    l = legend('unmitigated', 'mitigation (state-dep decent.)', 'mitigation (cent.)', 'suppression', 'elimination', 'Location', 'southoutside');
+    l.Layout.Tile = 'south';
     if saveFlag
         fName = "figS" + iPlot + ".png";
+        saveas(h, figFolder + fName);
+    end
+
+
+    h = figure(iPlot+2*nPlots);
+    sgtitle("R_0=" + par.Beta/par.Gamma)
+    if saveFlag
+        fName = "figS" + iPlot+nPlots + ".png";
         saveas(h, figFolder + fName);
     end 
 end
@@ -146,7 +201,7 @@ ind1 = find(costElim(1, :) > costSup(1, :), 1, 'last');
 ind2 = find(costElim(1, :) <= costSup(1, :), 1, 'first');
 R0crit = mean(Beta_vals([ind1 ind2]))/par.Gamma;
 
-iPlot = 2*nPlots + 1;
+iPlot = 3*nPlots + 1;
 iFile = nPlots+1;
 h = figure(iPlot);
 h.Position = [   141   407   770   561];
@@ -241,7 +296,7 @@ iFile = iFile + 1;
 h = figure(iPlot);
 imagesc(Beta_vals/par.Gamma, costPerInf_vals*dollarsPerInf, (costDecent-costMit)*dollarsPerInf/1e9);
 colorbar;
-%clim([0 cMax]);
+clim([0 8]);
 h = gca; h.YDir = 'normal';
 h.Colormap = hot;
 xlabel('R_0')
@@ -249,9 +304,31 @@ ylabel('cost per infection ($)')
 title('difference in cost between decentralised and centralised ($ bn)')
 
 if saveFlag
-    fName = "figS3.png";
+    fName = "figS5.png";
     saveas(h, figFolder + fName);
 end
+
+
+
+% Same figure with state-dependent behaviour
+iPlot = iPlot + 1;
+iFile = iFile + 1;
+h = figure(iPlot);
+imagesc(Beta_vals/par.Gamma, costPerInf_vals*dollarsPerInf, (costDecent_SD-costMit)*dollarsPerInf/1e9);
+colorbar;
+clim([0 8]);
+h = gca; h.YDir = 'normal';
+h.Colormap = hot;
+xlabel('R_0')
+ylabel('cost per infection ($)')
+title('difference in cost between state-dependent decentralised and centralised ($ bn)')
+
+if saveFlag
+    fName = "figS6.png";
+    saveas(h, figFolder + fName);
+end
+
+
 
 
 % Extra figure showing the (ignored) infection cost of elimination (arising
