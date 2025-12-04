@@ -168,7 +168,7 @@ h = gca; h.YDir = 'normal';
 h.Colormap = hot;
 xlabel('R_0')
 ylabel('cost per infection ($)')
-title('(b) migitgation (cent.) cost ($ bn)')
+title('(b) mitigation (cent.) cost ($ bn)')
 nexttile;
 imagesc(Beta_vals/par.Gamma, costPerInf_vals*dollarsPerInf, min(costElim, costSup)*dollarsPerInf/1e9);
 colorbar;
