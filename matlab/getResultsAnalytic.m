@@ -1,4 +1,4 @@
-function [results] = getResultsAnalytic(probType, a0, par)
+function [results] = getResultsAnalytic(a0, par)
 
 % Iteration settings
 maxTries = 1000;
@@ -9,15 +9,6 @@ relFact = 0.3 + 0.7*exp(-15*linspace(0, 1, maxTries));
 
 % Vector of times
 t = 0:par.dt:par.tMax;
-
-% Solving problem for centralised or decentralised control?
-if probType == "cent"
-    coeff = 2;
-elseif probType == "decent"
-    coeff = 1;
-else
-    error('probType must be "cent" or "decent')
-end
 
 % Set initial condition for a(t)
 a = a0;
@@ -33,7 +24,7 @@ while iTry <= maxTries & ~convFlag
     [S, I, ~] = solveModelFull(a, a, par);
 
     % Calculate analytical solution
-    aNew = (par.costlin + 2*par.costquad)./(2*par.costquad + coeff*par.costPerInf.*  (par.Beta*I)./par.N  .*  S(:, end)./par.N  );
+    aNew = (par.costlin + 2*par.costquad)./(2*par.costquad + par.costPerInf.*  (par.Beta*I)./par.N  .*  S(:, end)./par.N  );
 
     % Update a using specified relaxation factor
     a = max(0, min(1, (1-relFact(iTry))*a + relFact(iTry)*aNew ));
@@ -54,7 +45,7 @@ if ~convFlag
 %         [S, I, ~] = solveModelFull(a, a, par);
 %     
 %         % Calculate analytical solution
-%         aNew = (par.costlin + 2*par.costquad)./(2*par.costquad + coeff*par.costPerInf.*  (par.Beta*I)./par.N  .*  S(:, end)./par.N  );
+%         aNew = (par.costlin + 2*par.costquad)./(2*par.costquad + par.costPerInf.*  (par.Beta*I)./par.N  .*  S(:, end)./par.N  );
 %     
 %         % Update a using specified relaxation factor
 %         a = max(0, min(1, (1-relFact(end))*a + relFact(end)*aNew ));

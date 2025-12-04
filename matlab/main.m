@@ -106,7 +106,7 @@ for iScenario = 1:nScenarios
     % Solve decentralised problem with analytic method
     %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
-    resultsDecent(iScenario) = getResultsAnalytic("decent", a0, par);
+    resultsDecent(iScenario) = getResultsAnalytic(a0, par);
 
     resultsDecent_SD(iScenario) = getResultsAnalytic_SD(a0_SD, par);
 
