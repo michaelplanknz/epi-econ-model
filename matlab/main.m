@@ -76,17 +76,15 @@ for iScenario = 1:nScenarios
         % On subsequent iterations use a previous solution to initialise
         if Beta_list(iScenario) == Beta_list(iScenario-1)
             % Use the most recdent solution if it had the same value of Beta
-            x0 = resultsCent(iScenario-1).x;
-            a0 = resultsDecent(iScenario-1).a;
-            a0_SD = resultsDecent_SD(iScenario-1).a;
+            ind = iScenario-1;
         else
             % Otherwise use the most recent solution that had the same
             % value of costPerInf
             ind = find(costPerInf_list(1:iScenario-1) == costPerInf_list(iScenario), 1, 'last');
-            x0 = resultsCent(ind).x;
-            a0 = resultsDecent(ind).a;
-            a0_SD = resultsDecent_SD(ind).a;
         end
+        x0 = resultsCent(ind).x;
+        a0 = resultsDecent(ind).a;
+        a0_SD = resultsDecent_SD(ind).a;
     end
 
     %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
