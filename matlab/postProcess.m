@@ -44,6 +44,7 @@ tHoriz = 600;
 % Initialise matrices for heat map results
 costUnmit = zeros(size(Beta_mat));
 costDecent = zeros(size(Beta_mat));
+costDecent_SD = zeros(size(Beta_mat));
 costMit = zeros(size(Beta_mat));
 costSup = zeros(size(Beta_mat));
 costElim = zeros(size(Beta_mat));
@@ -65,6 +66,7 @@ for iScenario = 1:nScenarios
     % Fill matrix entries
     costUnmit(iRow, jCol) = results_u(iScenario).costInf(end);
     costDecent(iRow, jCol) = resultsDecent(iScenario).costInf(end) + resultsDecent(iScenario).costCont(end);
+    costDecent_SD(iRow, jCol) = resultsDecent_SD(iScenario).costInf(end) + resultsDecent_SD(iScenario).costCont(end);
     costMit(iRow, jCol) = resultsCent(iScenario).costInf(end) + resultsCent(iScenario).costCont(end);
 
      % Compute elimination costs
