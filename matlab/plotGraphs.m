@@ -294,6 +294,9 @@ end
 iPlot = iPlot + 1;
 iFile = iFile + 1;
 h = figure(iPlot);
+h.Position = [  216   409   994   385];
+tiledlayout(1, 2, 'TileSpacing', "compact")
+nexttile;
 imagesc(Beta_vals/par.Gamma, costPerInf_vals*dollarsPerInf, (costDecent-costMit)*dollarsPerInf/1e9);
 colorbar;
 clim([0 8]);
@@ -301,19 +304,9 @@ h = gca; h.YDir = 'normal';
 h.Colormap = hot;
 xlabel('R_0')
 ylabel('cost per infection ($)')
-title('difference in cost between decentralised and centralised ($ bn)')
+title('(b) state-independent decentralised model')
 
-if saveFlag
-    fName = "figS5.png";
-    saveas(h, figFolder + fName);
-end
-
-
-
-% Same figure with state-dependent behaviour
-iPlot = iPlot + 1;
-iFile = iFile + 1;
-h = figure(iPlot);
+nexttile;
 imagesc(Beta_vals/par.Gamma, costPerInf_vals*dollarsPerInf, (costDecent_SD-costMit)*dollarsPerInf/1e9);
 colorbar;
 clim([0 8]);
@@ -321,12 +314,17 @@ h = gca; h.YDir = 'normal';
 h.Colormap = hot;
 xlabel('R_0')
 ylabel('cost per infection ($)')
-title('difference in cost between state-dependent decentralised and centralised ($ bn)')
+title('(b) state-dependent decentralised model')
+
+sgtitle('difference in cost between decentralised and centralised ($ bn)')
+
 
 if saveFlag
-    fName = "figS6.png";
+    fName = "figS5.png";
     saveas(h, figFolder + fName);
 end
+
+
 
 
 
