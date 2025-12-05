@@ -175,7 +175,7 @@ for iPlot = 1:nPlots
     h = figure(iPlot+2*nPlots);
     sgtitle("R_0=" + par.Beta/par.Gamma)
     if saveFlag
-        fName = "figS" + iPlot+nPlots + ".png";
+        fName = "figS" + (iPlot+nPlots) + ".png";
         saveas(h, figFolder + fName);
     end 
 end
