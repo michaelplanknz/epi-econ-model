@@ -123,7 +123,7 @@ for iPlot = 1:nPlots
         nexttile;
         plot(t, results_u(iScenario).costInf*dollarsPerInf/1e9)
         hold on
-        plot(t, (resultsDecent_SD(iScenario).costInf + resultsDecent(iScenario).costCont)*dollarsPerInf/1e9)
+        plot(t, (resultsDecent_SD(iScenario).costInf + resultsDecent_SD(iScenario).costCont)*dollarsPerInf/1e9)
         plot(t, (resultsCent(iScenario).costInf + resultsCent(iScenario).costCont)*dollarsPerInf/1e9)
         plot(t, CSupRate*t*dollarsPerInf/1e9 )
         plot(t, CElimSim*dollarsPerInf/1e9 )
@@ -309,7 +309,7 @@ title('(b) state-independent decentralised model')
 nexttile;
 imagesc(Beta_vals/par.Gamma, costPerInf_vals*dollarsPerInf, (costDecent_SD-costMit)*dollarsPerInf/1e9);
 colorbar;
-clim([0 8]);
+%clim([0 8]);
 h = gca; h.YDir = 'normal';
 h.Colormap = hot;
 xlabel('R_0')
