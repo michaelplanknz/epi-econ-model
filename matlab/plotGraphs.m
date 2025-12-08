@@ -299,7 +299,7 @@ tiledlayout(1, 2, 'TileSpacing', "compact")
 nexttile;
 imagesc(Beta_vals/par.Gamma, costPerInf_vals*dollarsPerInf, (costDecent-costMit)*dollarsPerInf/1e9);
 colorbar;
-clim([0 8]);
+clim([-1 8]);
 h = gca; h.YDir = 'normal';
 h.Colormap = hot;
 xlabel('R_0')
@@ -309,7 +309,7 @@ title('(b) state-independent decentralised model')
 nexttile;
 imagesc(Beta_vals/par.Gamma, costPerInf_vals*dollarsPerInf, (costDecent_SD-costMit)*dollarsPerInf/1e9);
 colorbar;
-%clim([0 8]);
+clim([-1 8]);
 h = gca; h.YDir = 'normal';
 h.Colormap = hot;
 xlabel('R_0')
