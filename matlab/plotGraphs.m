@@ -58,7 +58,20 @@ for iPlot = 1:nPlots
         % Calculate dC/da as a check
         Sinf = resultsDecent(iScenario).S(end)/par.N;
         dCda = par.costPerInf*par.Beta/par.N * Sinf * resultsDecent(iScenario).a .* resultsDecent(iScenario).I - par.costlin - 2*par.costquad*(1-resultsDecent(iScenario).a);
+        % Record times where there is no control (a(t)=1), for visualisation purposes only
         indControl = find(resultsDecent(iScenario).a < 0.99999999);
+
+        % Calculate dC/da as a check - decentralised version
+        % Sinf = resultsDecent_SD(iScenario).S(end)/par.N;
+        % igd = 1/par.N * (resultsDecent_SD(iScenario).S+resultsDecent_SD(iScenario).I).*(par.costlin*(1-resultsDecent_SD(iScenario).a)+par.costquad*(1-resultsDecent_SD(iScenario).a).^2);
+        % Qa = par.dt * fliplr(cumsum(fliplr(igd)));
+        % term1 = par.costPerInf*par.Beta/par.N * Sinf * resultsDecent_SD(iScenario).a .* resultsDecent_SD(iScenario).I;
+        % term2 = - 1/par.N * (resultsDecent_SD(iScenario).S+resultsDecent_SD(iScenario).I).*(par.costlin + 2*par.costquad*(1-resultsDecent_SD(iScenario).a));
+        % term3 = - par.Beta/par.N * resultsDecent_SD(iScenario).a .* resultsDecent_SD(iScenario).I .* Qa;
+        % dCda = term1 + term2 + term3 ;
+        % %Record times where there is no control (a(t)=1), for visualisation purposes only
+        % indControl = find(resultsDecent_SD(iScenario).a < 0.99999999);
+
 
         % Main scenario plot
         figure(iPlot);
