@@ -6,7 +6,7 @@ outFolder = '../output/';
 figFolder = '../figures/';
 
 % Set to true to save Figures as .png files
-saveFlag = false;
+saveFlag = true;
 
 
 % Select values of Beta and costPerInf to plot
@@ -270,14 +270,14 @@ iPlot = iPlot + 1;
 iFile = iFile + 1;
 h = figure(iPlot);
 h.Position = [   139   463   994   385];
-tiledlayout(1, 2, "TileSpacing", "compact");
+tiledlayout(1, 2, "TileSpacing", "loose");
 
 nexttile;
 imagesc(Beta_vals/par.Gamma, costPerInf_vals*dollarsPerInf, tCrit);
 cb = colorbar;
 h = gca; h.YDir = 'normal';
 h.Colormap = hot;
-cb.Label.String = 'threshold time (days)';
+%cb.Label.String = 'threshold time (days)';
 cb.Label.Rotation = 270;
 cb.Label.Position(1) = 4;
 xlabel('R_0')
@@ -292,9 +292,20 @@ h.Colormap = hot;
 cb.Label.String = 'threshold time (days)';
 cb.Label.Rotation = 270;
 cb.Label.Position(1) = 3.8;
-xlabel('border outbreak detect-return time ratio')
-ylabel('\alpha_{TTI}')
+xlabel('rt_{det}')
+ylabel('\alpha')
 title('(b)')
+
+xa = 0.55;
+ya = 0.48;
+annotation('arrow', [xa-0.012 , xa-0.012], [ya - 0.042, ya - 0.142]);
+annotation('textbox', [xa, ya, 0.02, 0.02], 'string', 'more effective TTI', 'Rotation', 90, 'fitBoxToText', 'on', 'LineStyle', 'none')
+xa = 0.7;
+ya = 0.03;
+annotation('arrow', [xa - 0.005, xa - 0.055], [ya-0.01, ya-0.01]);
+annotation('textbox', [xa, ya, 0.02, 0.02], 'string', 'stronger border control', 'fitBoxToText', 'on', 'LineStyle', 'none')
+
+
 
 
 if saveFlag
