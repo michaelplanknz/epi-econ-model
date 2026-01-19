@@ -255,7 +255,7 @@ xlabel('R_0')
 text(1.4, 8000, 'suppression', 'Rotation', 90)
 text(2.4, 12000, 'elimination')
 text(2.2, 5000, 'mitigation', 'Color', 'w')
-text(2.2, 1200, 'no PSHMs', 'Color', 'w')
+text(2.2, 1200, 'no PHSMs', 'Color', 'w')
 ylabel('cost per infection ($)')
 title('(d) optimal strategy')
 
