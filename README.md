@@ -11,7 +11,8 @@ In an emerging pandemic, policymakers need to make decisions with limited inform
 
 # Version history
 
-* 9 December 2025 [pre-print](https://arxiv.org/abs/2512.08355v1) - results generated using the version of this repository tagged `v1.0`. 
+* 9 December 2025 [pre-print](https://arxiv.org/abs/2512.08355v1) - results generated using the version of this repository tagged `v1.0`.
+* 27 May 2026 [pre-print](https://arxiv.org/abs/2512.08355v2) - results generated using the version of this repository tagged `v1.1`. 
 
 # How to use this repository
 
