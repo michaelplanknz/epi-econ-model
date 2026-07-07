@@ -1,6 +1,6 @@
 # Joint economic and epidemiological modelling of alternative pandemic response strategies
 
-This repository contains Matlab code to reproduce the results in the article [Joint economic and epidemiological modelling of alternative pandemic response strategies](https://arxiv.org/abs/2512.08355).
+This repository contains Matlab code to reproduce the results in the article [Joint economic and epidemiological modelling of alternative pandemic response strategies](https://doi.org/10.1098/rsif.2026.0098).
 
 # Abstract
 
